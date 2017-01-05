@@ -1,0 +1,130 @@
+package com.fei.generator.util;
+
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class Constant {
+	/**
+	 * 模版文件所在目录
+	 */
+	public static final File TEMPLATE_FILE_DIR ;
+	static {
+		URL resource = Constant.class.getClassLoader().getResource("com/fei/generator/template");
+		TEMPLATE_FILE_DIR = new File(resource.getFile());
+	}
+	/**
+	 * 默认基础包
+	 */
+	public static final String DEFAULT_BASE_PACKAGE = "generator";
+	/* 文件标志 */
+	public static final int POJO = 0;
+
+	public static final Integer DAO_INTER = 1;// 接口
+	public static final Integer DAO_IMPL = 2;// 实现
+
+	public static final Integer SERVICE_INTER = 3;// 接口
+	public static final Integer SERVICE_IMPL = 4;// 实现
+
+	public static final Integer CONTROLLER = 5;
+	
+	public static final Integer MAPPER = 6;
+	
+	public static final Integer QUERY = 7;
+	public static final Integer BASE_QUERY = 8;
+	/* end */
+	/**
+	 * 模版文件名称map<文件标志,文件名称>
+	 */
+	@SuppressWarnings("serial")
+	public static final Map<Integer, String> TEMPLATEFILE_MAP = new HashMap<Integer, String>() {
+		{
+			put(Constant.POJO, "pojo.ftl");
+			put(Constant.DAO_INTER, "dao.ftl");
+			put(Constant.DAO_IMPL, "dao_impl.ftl");
+			put(Constant.SERVICE_INTER, "service.ftl");
+			put(Constant.SERVICE_IMPL, "service_impl.ftl");
+			put(Constant.CONTROLLER, "controller.ftl");
+			put(Constant.MAPPER, "mapper.ftl");
+			put(Constant.QUERY, "query.ftl");
+			put(Constant.BASE_QUERY, "base_query.ftl");
+		}
+	};
+	
+	@SuppressWarnings("serial")
+	public static final Map<String, String> DATATYPE_MAP = new HashMap<String, String>() {
+		{
+			put("varchar", "String");
+			put("char", "String");
+			put("blob", "byte[]");
+			put("text", "String");
+			put("longtext", "String");
+			put("integer", "Long");
+			put("tinyint", "Byte");
+			put("int", "Integer");
+			put("smallint", "Integer");
+			
+			put("mediumin", "Integer");
+			put("bit", "Boolean");
+			put("bigint", "Long");
+			put("float", "Float");
+			put("double", "Double");
+			put("decimal", "BigDecimal");
+			put("int", "Integer");
+			put("boolean", "Boolean");
+			
+			put("id", "Long");
+			put("date", "Date");
+			put("time", "Time");
+			put("datetime", "Date");
+			put("timestamp", "Date");
+			put("year", "Date");
+		}
+	};
+	public static final String FIELD_IS_KEY = "PRI";
+	@SuppressWarnings("serial")
+	public static final Map<Integer,String> FILE_TYPE_NAME_MAP = new HashMap<Integer, String>(){
+		{
+			put(Constant.POJO,"pojo");
+			put(Constant.DAO_INTER,"Dao");
+			put(Constant.DAO_IMPL,"DaoImpl");
+			put(Constant.SERVICE_INTER,"Service");
+			put(Constant.SERVICE_IMPL,"ServiceImpl");
+			put(Constant.CONTROLLER,"Controller");
+			put(Constant.MAPPER,"Mapper");
+			put(Constant.QUERY,"Query");
+			put(Constant.BASE_QUERY, "Query");
+		}
+	};
+	@SuppressWarnings("serial")
+	public static final Map<Integer,String> FILE_EXTENSION_MAP = new HashMap<Integer, String>(){
+		{
+			put(Constant.POJO,".java");
+			put(Constant.DAO_INTER,".java");
+			put(Constant.DAO_IMPL,".java");
+			put(Constant.SERVICE_INTER,".java");
+			put(Constant.SERVICE_IMPL,".java");
+			put(Constant.CONTROLLER,".java");
+			put(Constant.MAPPER,".xml");
+			put(Constant.QUERY,".java");
+			put(Constant.BASE_QUERY, ".java");
+		}
+	};
+	@SuppressWarnings("serial")
+	public static final Map<Integer,String> DEFAULT_PACKAGE_MAP = new HashMap<Integer, String>(){
+		{
+			put(Constant.POJO,"com.mypackage.pojo");
+			put(Constant.DAO_INTER,"com.mypackage.dao");
+			put(Constant.DAO_IMPL,"com.mypackage.dao.impl");
+			put(Constant.SERVICE_INTER,"com.mypackage.service");
+			put(Constant.SERVICE_IMPL,"com.mypackage.service.impl");
+			put(Constant.CONTROLLER,"com.mypackage.controller");
+			put(Constant.MAPPER,"com.mypackage.mapper");
+			put(Constant.QUERY,"com.mypackage.query");
+			put(Constant.BASE_QUERY, "com.mypackage.query");
+		}
+	};
+	
+
+}
