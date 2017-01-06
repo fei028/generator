@@ -24,7 +24,8 @@ public class Field implements Serializable{
 	
 	/** 列名 */
 	private String columnName;
-	private String columnName2;
+	/** 属性名称[经列名转换而来按照规则] */
+	private String propertyName;
 	/** 默认值 */
 	private String columnDefault;
 	/** 能否为空 */
@@ -44,7 +45,7 @@ public class Field implements Serializable{
 	public Field(String columnName, String columnDefault, boolean isNullAble, String dataType, String columnKey,
 			String extra, String columnComment) {
 		super();
-		this.columnName = columnName;
+		setColumnName(columnName);
 		this.columnDefault = columnDefault;
 		this.nullAble = isNullAble;
 		this.dataType = Constant.DATATYPE_MAP.get(dataType) == null ? "Object" : Constant.DATATYPE_MAP.get(dataType);
@@ -53,17 +54,29 @@ public class Field implements Serializable{
 		this.columnComment = columnComment;
 	}
 	public String getColumnName() {
+		return columnName;
+	}
+	
+	/**
+	 * 该字段是否为主键字段
+	 * @param field
+	 * @return
+	 */
+	public static boolean isKey(Field field) {
+		return field.getColumnKey().equals(COLUMN_PRIMARY_KEY);
+	}
+	
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+		
 		StringBuilder sb = new StringBuilder("");
-		String[] split = columnName.split("_");
+		String[] split = this.columnName.toLowerCase().split("_");
 		sb.append(split[0]);
 		for(int i = 1;i < split.length;i++){
 			sb.append(StringUtil.toUpperCaseFirstOne(split[i]));
 		}
-		this.columnName = sb.toString();
-		return columnName;
-	}
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+		
+		setPropertyName(sb.toString());
 	}
 	public String getColumnDefault() {
 		return columnDefault;
@@ -102,14 +115,11 @@ public class Field implements Serializable{
 	public void setColumnComment(String columnComment) {
 		this.columnComment = columnComment;
 	}
-	
-	public String getColumnName2() {
-		return columnName2;
+	public String getPropertyName() {
+		return propertyName;
 	}
-	public void setColumnName2(String columnName2) {
-		this.columnName2 = columnName2;
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
 	}
-	
-	
 	
 }

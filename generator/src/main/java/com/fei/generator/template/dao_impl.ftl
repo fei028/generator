@@ -19,7 +19,7 @@ public class ${className}DaoImpl implements ${className}Dao {
 	}
 	
 	@Override
-	public void deleteBy${table.primaryKeyField.columnName?cap_first}(${table.primaryKeyField.dataType} ${table.primaryKeyField.columnName?uncap_first}){
+	public void deleteBy${table.primaryKeyFields[0].columnName?cap_first}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].columnName?uncap_first}){
 	
 	}
 	
@@ -29,18 +29,20 @@ public class ${className}DaoImpl implements ${className}Dao {
 	}
 	
 	@Override
-	public ${className} selectBy${table.primaryKeyField.columnName?cap_first}(${table.primaryKeyField.dataType} ${table.primaryKeyField.columnName?uncap_first}){
+	public ${className} selectBy${table.primaryKeyFields[0].columnName?cap_first}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].columnName?uncap_first}){
 		${className} ${className?uncap_first} = null;
 		
 		return ${className?uncap_first};
 	}
-	
+	<#if table.primaryKeyFields?size = 1>
 	@Override
-	public List<${className}> selectBy${table.primaryKeyField.columnName?cap_first}s(List<${table.primaryKeyField.dataType}> ${table.primaryKeyField.columnName?uncap_first}s){
+	public List<${className}> selectBy${table.primaryKeyFields[0].columnName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].columnName?uncap_first}s){
 		List<${className}> ${className?uncap_first}s = null;
 		
 		return ${className?uncap_first}s;
 	}
+	</#if>
+
 	@Override
 	public List<${className}> select${className}sWithCondition(${className}Query ${className?uncap_first}Query){
 		List<${className}> ${className?uncap_first}s = null;
@@ -57,7 +59,7 @@ public class ${className}DaoImpl implements ${className}Dao {
 	}
 	
 	@Override
-	public void deleteBy${table.primaryKeyField.columnName?cap_first}s(${table.primaryKeyField.dataType}[] ${table.primaryKeyField.columnName}s){
+	public void deleteBy${table.primaryKeyFields[0].columnName?cap_first}s(${table.primaryKeyFields[0].dataType}[] ${table.primaryKeyFields[0].columnName}s){
 	
 	}
 

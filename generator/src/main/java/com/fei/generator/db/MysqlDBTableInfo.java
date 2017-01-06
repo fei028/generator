@@ -2,6 +2,7 @@ package com.fei.generator.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import com.fei.generator.model.Field;
 import com.fei.generator.model.Table;
 import com.fei.generator.util.Constant;
 import com.fei.generator.util.DBUtil;
+import com.fei.generator.util.StringUtil;
 
 
 public class MysqlDBTableInfo implements DBTableInfo{
@@ -29,33 +31,51 @@ public class MysqlDBTableInfo implements DBTableInfo{
 				  "SELECT DISTINCT TABLE_NAME "
 				+ "FROM information_schema.columns "
 				+ "WHERE table_schema='"+tableSchema+"'";
-		
-		Set<String> set = null;
-		Set<Table> tableSet = new HashSet<Table>();
-		Table table = null;
+		Set<Table> tableSet = null;
+		Connection conn = null;
 		try {
-			Connection conn = DBUtil.getConnection(param);
+			conn = DBUtil.getConnection(param);
 			ResultSet resultSet = DBUtil.execute(conn,getTableSql);
-			if(excludeTableNames != null && excludeTableNames.length > 0){
-				// 去重 防止同一表名多个
-				set=new HashSet<String>(Arrays.asList(excludeTableNames));
-			}else{
-				set=new HashSet<String>();
-			}
-			while(resultSet.next()){
-				String tableName = resultSet.getString("TABLE_NAME");
-				if(!set.contains(tableName)){
-					table = new Table();
-					table.setTableName(tableName);
-					// 获取字段集合
-					List<Field> fields = getFieldsByTableName(tableSchema, table);
-					table.setFields(fields);
-					tableSet.add(table);
-				}
-			}
+			tableSet = getTableSet(conn, resultSet, tableSchema, excludeTableNames);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		
+		return tableSet;
+	}
+	
+	private Set<Table> getTableSet(Connection conn, ResultSet resultSet,String tableSchema, String... excludeTableNames) throws SQLException {
+		
+		Set<Table> tableSet = new HashSet<Table>();
+		
+		Table table = null;
+		Set<String> set = null;
+		
+		if(excludeTableNames != null && excludeTableNames.length > 0){
+			// 去重 防止同一表名多个
+			set=new HashSet<String>(Arrays.asList(excludeTableNames));
+		}else{
+			set=new HashSet<String>();
+		}
+		
+		while(resultSet.next()){
+			String tableName = resultSet.getString("TABLE_NAME");
+			if(!set.contains(tableName)){
+				table = new Table();
+				table.setTableName(tableName);
+				// 获取字段集合
+				List<Field> fields = getFieldsByTableName(conn, tableSchema, table);
+				table.setFields(fields);
+				tableSet.add(table);
+			}
+		}
+		
 		return tableSet;
 	}
 	/**
@@ -64,7 +84,7 @@ public class MysqlDBTableInfo implements DBTableInfo{
 	 * @param table
 	 * @return
 	 */
-	public List<Field> getFieldsByTableName(String tableSchema,Table table){
+	public List<Field> getFieldsByTableName(Connection conn, String tableSchema,Table table){
 		List<Field> fields = new ArrayList<Field>();
 		
 		String getTableFiledsSql = 
@@ -72,28 +92,18 @@ public class MysqlDBTableInfo implements DBTableInfo{
 				+ "FROM information_schema.columns "
 				+ "WHERE table_schema='"+tableSchema+"' and table_name='"+table.getTableName()+"'";
 		try {
-			Connection conn = DBUtil.getConnection(param);
 			ResultSet resultSet = DBUtil.execute(conn, getTableFiledsSql);
 			Field field = null;
 			while(resultSet.next()){
-				String columnName = resultSet.getString("COLUMN_NAME");
-				columnName = columnName.toLowerCase();
-				String columnName2 = resultSet.getString("COLUMN_NAME");
-				String columnDefault = resultSet.getString("COLUMN_DEFAULT");
-				boolean isNullAble = resultSet.getString("IS_NULLABLE").equals("YES");
-				String dataType = resultSet.getString("DATA_TYPE");
-				String columnKey = resultSet.getString("COLUMN_KEY");
 				
-				String extra = resultSet.getString("EXTRA");
-				String columnComment = resultSet.getString("COLUMN_COMMENT");
+				field = getField(resultSet);
 				
-				field = new Field(columnName, columnDefault, isNullAble, dataType, columnKey, extra, columnComment);
-				field.setColumnName2(columnName2);
-				
-				fields.add(field);
-				
-				if(columnKey.equals(Constant.FIELD_IS_KEY)){
-					table.setPrimaryKeyField(field);
+				if(!Field.isKey(field)){
+					// 普通字段
+					fields.add(field);
+				}else{
+					// 主键字段
+					table.getPrimaryKeyFields().add(field);
 				}
 			}
 		} catch (Exception e) {
@@ -101,4 +111,20 @@ public class MysqlDBTableInfo implements DBTableInfo{
 		}
 		return fields;
 	}
+	
+	private Field getField(ResultSet resultSet) throws SQLException {
+		
+		String columnName = resultSet.getString("COLUMN_NAME");
+		String columnDefault = resultSet.getString("COLUMN_DEFAULT");
+		boolean isNullAble = resultSet.getString("IS_NULLABLE").equals("YES");
+		String dataType = resultSet.getString("DATA_TYPE");
+		String columnKey = resultSet.getString("COLUMN_KEY");
+		String extra = resultSet.getString("EXTRA");
+		String columnComment = resultSet.getString("COLUMN_COMMENT");
+		
+		Field field = new Field(columnName, columnDefault, isNullAble, dataType, columnKey, extra, columnComment);
+		
+		return field;
+	}
+	
 }

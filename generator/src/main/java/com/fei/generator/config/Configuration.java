@@ -1,8 +1,15 @@
 package com.fei.generator.config;
 
 import com.fei.generator.model.ConnectionParam;
-
+/**
+ * 
+ * @author fei
+ *
+ */
 public class Configuration {
+	
+	/** 作者[创建人] */
+	private String author = "fei";
 	/** 数据库连接配置 **/
 	private String classDriverName = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
@@ -31,6 +38,14 @@ public class Configuration {
 	private String dbName;
 
 	private ConnectionParam param;
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 
 	public String getClassDriverName() {
 		return classDriverName;

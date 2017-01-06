@@ -3,15 +3,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="${dao_package}.${className}Dao" >
   <resultMap id="${className?uncap_first}" type="${className}" >
-    <id column="${table.primaryKeyField.columnName2}" property="${table.primaryKeyField.columnName?uncap_first}" javaType="${table.primaryKeyField.dataType?uncap_first}" />
+    <#list table.primaryKeyFields as field>
+    <id column="${field.columnName}" property="${field.propertyName?uncap_first}" javaType="${field.dataType?uncap_first}" />
+    </#list>
     <#list table.fields as field>
-    <result column="${field.columnName2}" property="${field.columnName?uncap_first}" javaType="${field.dataType?uncap_first}" />
+    <result column="${field.columnName}" property="${field.propertyName?uncap_first}" javaType="${field.dataType?uncap_first}" />
     </#list>
   </resultMap>
   
   <sql id="Base_Column_List" >
+  	<#list table.primaryKeyFields as field>
+    ${field.columnName}<#if table.primaryKeyFields?size gt (field_index+1)  >,<#elseif table.fields?size gt 0>,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
+    </#list>
   	<#list table.fields as field>
-    ${field.columnName2}<#if field_index+1 < table.fields?size >,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
+    ${field.columnName}<#if table.fields?size gt (field_index+1) >,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
     </#list>
   </sql>
   
@@ -29,9 +34,14 @@
   <!-- 查询where语句部分 -->
   <sql id="where">
 	<where>
+		<#list table.primaryKeyFields as field>
+		<if test="${field.propertyName?uncap_first} != null">
+			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
+		</if>
+		</#list>
 		<#list table.fields as field>
-		<if test="${field.columnName?uncap_first} != null">
-			AND ${field.columnName2} = ${'#'}{${field.columnName?uncap_first}}
+		<if test="${field.propertyName?uncap_first} != null">
+			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
 		</if>
 		</#list>
 	</where>
@@ -63,67 +73,101 @@
   
   <!--  条件查询对应记录总数  -->
   <select id="getCountWithCondition" resultType="long" parameterType="${className?cap_first}Query">
-  	SELECT count(1)
+  	SELECT count(*)
   	FROM ${table.tableName}
   	<include refid="where"/>
   </select>
   
+  <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量查询 -->
-  <select id="selectBy${table.primaryKeyField.columnName?cap_first}s" resultMap="${className?uncap_first}">
+  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}">
   	SELECT 
   	<include refid="Base_Column_List"/>
   	FROM ${table.tableName}
-  	WHERE ${table.primaryKeyField.columnName2} IN
-  	 <foreach collection="list" item="${table.primaryKeyField.columnName?uncap_first}" open="(" close=")" separator=",">
-	 	${'$'}{${table.primaryKeyField.columnName?uncap_first}}
+  	WHERE ${table.primaryKeyFields[0].columnName} IN
+  	 <foreach collection="list" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
+	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
 	 </foreach>
   </select>
   
   <!-- 通过主键查询  -->
-  <select id="selectBy${table.primaryKeyField.columnName?cap_first}" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyField.dataType?uncap_first}" >
-    select 
+  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
+    SELECT 
     <include refid="Base_Column_List" />
-    from ${table.tableName}
-    where ${table.primaryKeyField.columnName2} = ${'#'}{${table.primaryKeyField.columnName?uncap_first}}
+    FROM ${table.tableName}
+    WHERE ${table.primaryKeyFields[0].columnName} = ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
   </select>
+  <#else>
+  <!-- 通过主键查询  -->
+  <select id="selectBy${className?cap_first}Key" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Key" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM ${table.tableName}
+    WHERE 
+	<#list table.primaryKeyFields as field>
+	${field.columnName} = ${'#'}{${field.propertyName?uncap_first}} <#if table.primaryKeyFields?size != (field_index+1)>AND</#if>
+	</#list>
+  </select>
+  </#if>
   
 <!--  *****查询有关  end***** -->
 
 <!--  *****删除有关  start***** -->
-
+  <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量删除 -->
-  <delete id="deleteBy${table.primaryKeyField.columnName?cap_first}s">
+  <delete id="deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s">
   	 DELETE FROM ${table.tableName}
-     WHERE ${table.primaryKeyField.columnName2} IN 
-	 <foreach collection="array" item="${table.primaryKeyField.columnName?uncap_first}" open="(" close=")" separator=",">
-	 	${'$'}{${table.primaryKeyField.columnName?uncap_first}}
+     WHERE ${table.primaryKeyFields[0].columnName} IN 
+	 <foreach collection="array" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
+	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
 	 </foreach>
   </delete>
   
   <!-- 通过主键删除 -->
-  <delete id="deleteBy${table.primaryKeyField.columnName?cap_first}" parameterType="${table.primaryKeyField.dataType?uncap_first}" >
+  <delete id="deleteBy${table.primaryKeyFields[0].propertyName?cap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
     delete from ${table.tableName}
-    where ${table.primaryKeyField.columnName2} = ${'#'}{${table.primaryKeyField.columnName?uncap_first}}
+    where ${table.primaryKeyFields[0].columnName} = ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
   </delete>
+  <#else>
+  <!-- 通过主键删除 -->
+  <delete id="deleteBy${className?cap_first}Key" parameterType="${className?cap_first}Key" >
+    delete from ${table.tableName}
+    where 
+	<#list table.primaryKeyFields as field>
+	${field.columnName} = ${'#'}{${field.propertyName?uncap_first}} <#if table.primaryKeyFields?size gt (field_index+1)>AND</#if>
+	</#list>
+  </delete>
+  </#if>
+  
   
 <!--  *****删除有关  end***** -->
 
 <!--  *****插入有关  start***** -->
 
   <!-- 有选择插入字段 NULL忽略-->
-  <insert id="insertSelective" parameterType="${className}" useGeneratedKeys="true" keyProperty="${table.primaryKeyField.columnName?uncap_first}">
+  <insert id="insertSelective" parameterType="${className}" <#if table.primaryKeyFields?size = 1>useGeneratedKeys="true" keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>>
     insert into ${table.tableName}
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <#list table.primaryKeyFields as field>
+      <if test="${field.propertyName?uncap_first} != null" >
+        ${field.columnName},
+      </if>
+      </#list>
       <#list table.fields as field>
-      <if test="${field.columnName?uncap_first} != null" >
-        ${field.columnName2},
+      <if test="${field.propertyName?uncap_first} != null" >
+        ${field.columnName},
       </if>
       </#list>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <#list table.primaryKeyFields as field>
+      <if test="${field.propertyName?uncap_first} != null" >
+       ${'#'}{${field.propertyName?uncap_first}},
+      </if>
+	  </#list>
       <#list table.fields as field>
-      <if test="${field.columnName?uncap_first} != null" >
-       ${'#'}{${field.columnName?uncap_first}},
+      <if test="${field.propertyName?uncap_first} != null" >
+       ${'#'}{${field.propertyName?uncap_first}},
       </if>
 	  </#list>
     </trim>
@@ -140,13 +184,16 @@
       <#list table.fields as field>
       <#-- 主键忽略 -->
       <#if field.columnKey != "PRI">
-      <if test="${field.columnName?uncap_first} != null" >
-        ${field.columnName2} = ${'#'}{${field.columnName?uncap_first}},
+      <if test="${field.propertyName?uncap_first} != null" >
+        ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}},
       </if>
       </#if>
       </#list>
     </set>
-    where ${table.primaryKeyField.columnName2} = ${'#'}{${table.primaryKeyField.columnName?uncap_first}}
+    where 
+    <#list table.primaryKeyFields as field>
+	${field.columnName} = ${'#'}{${field.propertyName?uncap_first}} <#if table.primaryKeyFields?size gt (field_index+1)>AND</#if>
+	</#list>
   </update>
 
 <!--  *****更新有关  end***** -->

@@ -20,19 +20,20 @@ public abstract class Constant {
 	public static final String DEFAULT_BASE_PACKAGE = "generator";
 	/* 文件标志 */
 	public static final int POJO = 0;
+	public static final int POJO_KEY = 1;
 
-	public static final Integer DAO_INTER = 1;// 接口
-	public static final Integer DAO_IMPL = 2;// 实现
+	public static final Integer DAO_INTER = 2;// 接口
+	public static final Integer DAO_IMPL = 3;// 实现
 
-	public static final Integer SERVICE_INTER = 3;// 接口
-	public static final Integer SERVICE_IMPL = 4;// 实现
+	public static final Integer SERVICE_INTER = 4;// 接口
+	public static final Integer SERVICE_IMPL = 5;// 实现
 
-	public static final Integer CONTROLLER = 5;
+	public static final Integer CONTROLLER = 6;
 	
-	public static final Integer MAPPER = 6;
+	public static final Integer MAPPER = 7;
 	
-	public static final Integer QUERY = 7;
-	public static final Integer BASE_QUERY = 8;
+	public static final Integer QUERY = 8;
+	public static final Integer BASE_QUERY = 9;
 	/* end */
 	/**
 	 * 模版文件名称map<文件标志,文件名称>
@@ -41,6 +42,7 @@ public abstract class Constant {
 	public static final Map<Integer, String> TEMPLATEFILE_MAP = new HashMap<Integer, String>() {
 		{
 			put(Constant.POJO, "pojo.ftl");
+			put(Constant.POJO_KEY, "pojo_key.ftl");
 			put(Constant.DAO_INTER, "dao.ftl");
 			put(Constant.DAO_IMPL, "dao_impl.ftl");
 			put(Constant.SERVICE_INTER, "service.ftl");
@@ -82,11 +84,11 @@ public abstract class Constant {
 			put("year", "Date");
 		}
 	};
-	public static final String FIELD_IS_KEY = "PRI";
 	@SuppressWarnings("serial")
 	public static final Map<Integer,String> FILE_TYPE_NAME_MAP = new HashMap<Integer, String>(){
 		{
 			put(Constant.POJO,"pojo");
+			put(Constant.POJO_KEY,"Key");
 			put(Constant.DAO_INTER,"Dao");
 			put(Constant.DAO_IMPL,"DaoImpl");
 			put(Constant.SERVICE_INTER,"Service");
@@ -101,6 +103,7 @@ public abstract class Constant {
 	public static final Map<Integer,String> FILE_EXTENSION_MAP = new HashMap<Integer, String>(){
 		{
 			put(Constant.POJO,".java");
+			put(Constant.POJO_KEY,".java");
 			put(Constant.DAO_INTER,".java");
 			put(Constant.DAO_IMPL,".java");
 			put(Constant.SERVICE_INTER,".java");

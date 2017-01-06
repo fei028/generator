@@ -4,6 +4,8 @@ package ${base_query_package};
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xlkh.bdmp.common.page.SimplePage;
+
 /**
  * 
  * @author fei

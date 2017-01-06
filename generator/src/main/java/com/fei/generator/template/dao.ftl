@@ -5,6 +5,9 @@ import java.util.List;
 
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
+<#if table.primaryKeyFields?size gt 1>
+import ${pojo_package}.${className}Key;
+</#if>
 /**
  * 
  * @author fei
@@ -19,38 +22,55 @@ public interface ${className}Dao {
 	 */
 	public void insertSelective(${className} ${className?uncap_first});
 	
+	<#if table.primaryKeyFields?size = 1>
 	/**
 	 * 通过主键删除
-	 * @param 
+	 * @param ${table.primaryKeyFields[0].propertyName?uncap_first} 主键
 	 */
-	public void deleteBy${table.primaryKeyField.columnName?cap_first}(${table.primaryKeyField.dataType} ${table.primaryKeyField.columnName?uncap_first});
+	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first});
 	
 	/**
 	 * 批量删除
-	 * @param ${table.primaryKeyField.columnName?cap_first}s 主键集合
+	 * @param ${table.primaryKeyFields[0].propertyName?cap_first}s 主键集合
 	 */
-	public void deleteBy${table.primaryKeyField.columnName?cap_first}s(${table.primaryKeyField.dataType}[] ${table.primaryKeyField.columnName}s);
+	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].dataType}[] ${table.primaryKeyFields[0].propertyName}s);
+	<#else>
+	/**
+	 * 通过主键删除
+	 * @param ${className?uncap_first}Key 主键对象
+	 */
+	public void deleteBy${className?cap_first}Key(${className?cap_first}Key ${className?uncap_first}Key);
 	
+	</#if>
 	/**
 	 * 更新,pojo中属性为NULL值不更新对应数据库中字段
 	 * @param ${className?uncap_first}
 	 */
 	public void update(${className} ${className?uncap_first});
 	
+	<#if table.primaryKeyFields?size = 1>
 	/**
 	 * 通过主键查询获取${className}对象
-	 * @param ${table.primaryKeyField.columnName} 主键id
+	 * @param ${table.primaryKeyFields[0].propertyName} 主键id
 	 * @return ${className}对象
 	 */
-	public ${className} selectBy${table.primaryKeyField.columnName?cap_first}(${table.primaryKeyField.dataType} ${table.primaryKeyField.columnName?uncap_first});
+	public ${className} selectBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first});
 	
 	/**
 	 * 通过主键集合查询获取${className}对象集合
-	 * @param ${table.primaryKeyField.columnName} 主键id
+	 * @param ${table.primaryKeyFields[0].propertyName} 主键id
 	 * @return ${className}对象集合
 	 */
-	public List<${className}> selectBy${table.primaryKeyField.columnName?cap_first}s(List<${table.primaryKeyField.dataType}> ${table.primaryKeyField.columnName?uncap_first}s);
-	
+	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s);
+	<#else>
+	/**
+	 * 通过主键查询获取${className}对象
+	 * @param ${className?uncap_first}Key 主键对象
+	 * @return ${className}对象
+	 */
+	public ${className} selectBy${className?cap_first}Key(${className?cap_first}Key ${className?uncap_first}Key);
+	</#if>
+
 	/**
 	 * 条件查询
 	 * @param ${className?uncap_first}Query

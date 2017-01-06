@@ -25,7 +25,9 @@ import freemarker.template.TemplateException;
  *
  */
 public class Generator {
+	
 	private Configuration configuration;
+	
 	public Generator(Configuration configuration) {
 		this.configuration = configuration;
 		
@@ -71,16 +73,11 @@ public class Generator {
 		Set<Table> tables = dbTableInfo.getTables(configuration.getDbName());
 		if (configuration.isGeneratorPojo()) {
 			generatorFile(tables,Constant.POJO);
+		    generatorPojoKeyFile(tables,Constant.POJO_KEY);
 		}
 		if (configuration.isGeneratorQuery()) {
 			generatorFile(tables,Constant.QUERY);
-			Map<String, Object> root = new HashMap<String, Object>();
-			root.put("key", Constant.BASE_QUERY);
-			root.put("className", "Base");
-			root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
-			root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY)).replace(".", File.separator));
-			File f = createFile(root);
-			FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_QUERY), f, root);
+			generatorBaseQueryFile();
 		}
 		if (configuration.isGeneratorMapperXml()) {
 			generatorFile(tables,Constant.MAPPER);
@@ -102,7 +99,33 @@ public class Generator {
 		}
 	}
 
-	private static void generatorFile(Set<Table> tables, int templateKey) throws IOException, TemplateException {
+	private void generatorPojoKeyFile(Set<Table> tables, int pojoKey) throws IOException, TemplateException {
+		for (Table table : tables) {
+			if(table.getPrimaryKeyFields().size() > 1){
+				Map<String, Object> root = new HashMap<String, Object>();
+				root.put("table", table);
+				root.put("key", pojoKey);
+				root.put("className", getClassName(table.getTableName()));
+				root.put("pojo_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.POJO));
+				root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.POJO)).replace(".", File.separator));
+				File f = createFile(root);
+				FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.POJO_KEY), f, root);
+			}
+		}
+	}
+
+	private void generatorBaseQueryFile() throws IOException, TemplateException {
+		
+		Map<String, Object> root = new HashMap<String, Object>();
+		root.put("key", Constant.BASE_QUERY);
+		root.put("className", "Base");
+		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
+		root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY)).replace(".", File.separator));
+		File f = createFile(root);
+		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_QUERY), f, root);
+	}
+
+	private void generatorFile(Set<Table> tables, int templateKey) throws IOException, TemplateException {
 		if(tables != null && tables.size() > 0){
 			
 			String templateFileName = Constant.TEMPLATEFILE_MAP.get(templateKey);
@@ -115,7 +138,7 @@ public class Generator {
 		
 	}
 
-	private static File createFile(Map<String, Object> root) {
+	private File createFile(Map<String, Object> root) {
 		Integer key = (Integer) root.get("key");
 		// 目录不存在时创建
 		File file = new File("src/main/java");
@@ -142,18 +165,12 @@ public class Generator {
 		
 		return f;
 	}
-	private static Map<String, Object> getRootData(Table table, int templateKey) {
+	
+	private Map<String, Object> getRootData(Table table, int templateKey) {
 		Map<String, Object> root = new HashMap<String, Object>();
-		root.put("author", "fei");
-		// 文件名
-		String[] split = table.getTableName().split("_");
-		StringBuilder sb = new StringBuilder("");
-		sb.append(StringUtil.toUpperCaseFirstOne(split[0].toString()));
-		for(int i= 1; i < split.length; i++){
-			sb.append(StringUtil.toUpperCaseFirstOne(split[i].toString()));
-		}
-		// 类名
-		String className = StringUtil.toUpperCaseFirstOne(sb.toString());
+		root.put("author", configuration.getAuthor());
+		
+		String className = getClassName(table.getTableName());
 		root.put("className", className);
 		root.put("key", templateKey );
 		root.put("table", table );
@@ -175,14 +192,42 @@ public class Generator {
 		return root;
 	}
 	
+	private String getClassName(String tableName) {
+		
+		if(tableName == null){
+			return null;
+		}
+		// 文件名
+		String[] split = tableName.split("_");
+		StringBuilder sb = new StringBuilder("");
+		sb.append(StringUtil.toUpperCaseFirstOne(split[0].toString()));
+		for (int i = 1; i < split.length; i++) {
+			sb.append(StringUtil.toUpperCaseFirstOne(split[i].toString()));
+		}
+		// 类名
+		String className = StringUtil.toUpperCaseFirstOne(sb.toString());
+		return className;
+	}
+
 	public static void main(String[] args) {
 		Configuration _configuration = new Configuration();
-		_configuration.setUrl("jdbc:mysql://localhost:3306/gen?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8");
+		String dbName = "test";
+		
+		_configuration.setUrl("jdbc:mysql://localhost:3306/"+dbName+"?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8");
+		
+		
+		_configuration.setPojoPackage("com.xlkh.bdmp.pojo.server");
 		_configuration.setDaoPackage("com.xlkh.bdmp.dao.server");
 		_configuration.setMapperPackage("com.xlkh.bdmp.mapper.server");
-		_configuration.setPojoPackage("com.xlkh.bdmp.pojo.server");
 		_configuration.setQueryPackage("com.xlkh.bdmp.query.server");
-		_configuration.setDbName("gen");
+		_configuration.setBaseQueryPackage("com.xlkh.bdmp.query");
+		_configuration.setServicePackage("com.xlkh.bdmp.service.server");
+		_configuration.setServiceImplPackage("com.xlkh.bdmp.service.server");
+		_configuration.setControllerPackage("com.xlkh.bdmp.controller.server");
+		
+		_configuration.setGeneratorDaoImpl(false);
+		
+		_configuration.setDbName(dbName );
 		GeneratorFactory generatorFactory = new GeneratorFactory(_configuration );
 		Generator generator = null;
 		try {

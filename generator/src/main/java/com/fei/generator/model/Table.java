@@ -1,6 +1,7 @@
 package com.fei.generator.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * 数据库表
@@ -15,10 +16,11 @@ public class Table implements Serializable{
 	private static final long serialVersionUID = 4773621982599516868L;
 	/** 表名 */
 	private String tableName;
-	/** 该表中字段集合 */
+	/** 该表中字段集合[不含主键] */
 	private List<Field> fields;
+	/** 该表中主键字段集合  */
+	private List<Field> primaryKeyFields = new ArrayList<>();
 	
-	private Field primaryKeyField;
 	public String getTableName() {
 		return tableName;
 	}
@@ -31,12 +33,13 @@ public class Table implements Serializable{
 	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
-	public Field getPrimaryKeyField() {
-		return primaryKeyField;
+	public List<Field> getPrimaryKeyFields() {
+		return primaryKeyFields;
 	}
-	public void setPrimaryKeyField(Field primaryKeyField) {
-		this.primaryKeyField = primaryKeyField;
+	public void setPrimaryKeyFields(List<Field> primaryKeyFields) {
+		this.primaryKeyFields = primaryKeyFields;
 	}
+	
 	
 	
 }
