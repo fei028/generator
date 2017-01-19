@@ -2,6 +2,7 @@
 package ${dao_package};
 
 import java.util.List;
+import java.util.Map;
 
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
@@ -58,10 +59,10 @@ public interface ${className}Dao {
 	
 	/**
 	 * 通过主键集合查询获取${className}对象集合
-	 * @param ${table.primaryKeyFields[0].propertyName} 主键id
+	 * @param map 放置两个对象 key[fields] --> String 字段字符串，字段之间以逗号间隔， key[keys] --> List<主键类型> list,只需放入这两个key,对应放好value即可
 	 * @return ${className}对象集合
 	 */
-	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s);
+	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(Map<String,Object> map);
 	<#else>
 	/**
 	 * 通过主键查询获取${className}对象

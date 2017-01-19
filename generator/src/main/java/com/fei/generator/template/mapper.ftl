@@ -80,12 +80,17 @@
   
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量查询 -->
-  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}">
+  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}" parameterType="map">
   	SELECT 
-  	<include refid="Base_Column_List"/>
+  	<if test="fields == null">
+  		<include refid="Base_Column_List"/>
+  	</if>
+  	<if test="fields != null">
+  		${'$'}{fields}
+  	</if>
   	FROM ${table.tableName}
   	WHERE ${table.primaryKeyFields[0].columnName} IN
-  	 <foreach collection="list" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
+  	 <foreach collection="keys" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
 	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
 	 </foreach>
   </select>
