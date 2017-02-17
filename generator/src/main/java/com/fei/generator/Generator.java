@@ -10,7 +10,6 @@ import com.fei.generator.config.Configuration;
 import com.fei.generator.db.DBTableInfo;
 import com.fei.generator.db.MysqlDBTableInfo;
 import com.fei.generator.factory.GeneratorFactory;
-import com.fei.generator.model.ConnectionParam;
 import com.fei.generator.model.Table;
 import com.fei.generator.util.Constant;
 import com.fei.generator.util.FreeMarkerUtil;
@@ -211,19 +210,19 @@ public class Generator {
 
 	public static void main(String[] args) {
 		Configuration _configuration = new Configuration();
-		String dbName = "test";
+		String dbName = "gen";
 		
 		_configuration.setUrl("jdbc:mysql://localhost:3306/"+dbName+"?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8");
 		
 		
-		_configuration.setPojoPackage("com.xlkh.bdmp.pojo.server");
-		_configuration.setDaoPackage("com.xlkh.bdmp.dao.server");
-		_configuration.setMapperPackage("com.xlkh.bdmp.mapper.server");
-		_configuration.setQueryPackage("com.xlkh.bdmp.query.server");
-		_configuration.setBaseQueryPackage("com.xlkh.bdmp.query");
-		_configuration.setServicePackage("com.xlkh.bdmp.service.server");
-		_configuration.setServiceImplPackage("com.xlkh.bdmp.service.server");
-		_configuration.setControllerPackage("com.xlkh.bdmp.controller.server");
+		_configuration.setPojoPackage("com.xlkh.platform.pojo.system");
+		_configuration.setDaoPackage("com.xlkh.platform.dao.system");
+		_configuration.setMapperPackage("com.xlkh.platform.mapper.system");
+		_configuration.setQueryPackage("com.xlkh.platform.query.system");
+		_configuration.setBaseQueryPackage("com.xlkh.platform.query");
+		_configuration.setServicePackage("com.xlkh.platform.service.system");
+		_configuration.setServiceImplPackage("com.xlkh.platform.service.system");
+		_configuration.setControllerPackage("com.xlkh.platform.controller.system");
 		
 		_configuration.setGeneratorDaoImpl(false);
 		

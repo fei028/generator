@@ -35,15 +35,31 @@
   <sql id="where">
 	<where>
 		<#list table.primaryKeyFields as field>
-		<if test="${field.propertyName?uncap_first} != null">
+		<if test="${field.propertyName?uncap_first} != null  and keys == null">
 			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
 		</if>
 		</#list>
+		<#if (table.primaryKeyFields?size=1)>
+		<!-- 后期添加 -->
+		<if test="keys != null">
+			AND user_id in 
+			<foreach collection="keys" item="key" open="(" close=")" separator=",">
+				${r'#{key}'}
+			</foreach>
+		</if>
+		</#if>
 		<#list table.fields as field>
 		<if test="${field.propertyName?uncap_first} != null">
 			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
 		</if>
 		</#list>
+		<!-- 后期添加 -->
+		<if test="beginDate != null">
+			AND create_time &gt;= ${r'#{beginDate}'}
+		</if>
+		<if test="endDate != null">
+			AND create_time &lt;= ${r'#{endDate}'}
+		</if>
 	</where>
   </sql>
   <!-- 查询语句order by 部分 -->
@@ -90,9 +106,9 @@
   	</if>
   	FROM ${table.tableName}
   	WHERE ${table.primaryKeyFields[0].columnName} IN
-  	 <foreach collection="keys" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
+  	<foreach collection="keys" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
 	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
-	 </foreach>
+	</foreach>
   </select>
   
   <!-- 通过主键查询  -->

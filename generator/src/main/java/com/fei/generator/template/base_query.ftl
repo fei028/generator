@@ -2,6 +2,7 @@
 package ${base_query_package};
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.xlkh.bdmp.common.page.SimplePage;
@@ -31,7 +32,7 @@ public class BaseQuery {
 	/** 页号，默认为1 */
 	private Integer pageNo = DEFAULT_PAGENO;
 	/** 起始行 */
-	private Integer startRow;
+	private Long startRow;
 	/** 每页数量，默认为10 */
 	private Integer pageSize = DEFAULT_PAGESIZE;
 
@@ -45,14 +46,14 @@ public class BaseQuery {
 			pageNo = DEFAULT_PAGENO;
 		}
 		this.pageNo = pageNo <= 0 ? DEFAULT_PAGENO : pageNo;
-		this.startRow = (this.pageNo - 1) * pageSize;
+		this.startRow = (long) ((this.pageNo - 1) * pageSize);
 	}
 
-	public Integer getStartRow() {
+	public Long getStartRow() {
 		return startRow;
 	}
 
-	public void setStartRow(Integer startRow) {
+	public void setStartRow(Long startRow) {
 		this.startRow = startRow;
 	}
 
@@ -66,7 +67,7 @@ public class BaseQuery {
 			pageSize = DEFAULT_PAGESIZE;
 		}
 		this.pageSize = pageSize <= 0 ? DEFAULT_PAGESIZE : pageSize;
-		this.startRow = (this.pageNo - 1) * this.pageSize;
+		this.startRow = (long) ((this.pageNo - 1) * this.pageSize);
 	}
 	
 	/*********** Order By ***********************/
@@ -82,7 +83,7 @@ public class BaseQuery {
 
 	/**
 	 * 排序字段类
-	 * @author 鹏飞
+	 * @author fei
 	 *
 	 */
 	protected class OrderField{
@@ -112,5 +113,42 @@ public class BaseQuery {
 		}
 
 	}
+	
+	private Date beginDate;
+	private Date endDate;
 
+	public Date getBeginDate() {
+		return beginDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	
+	private List<?> keys;
+	
+	public List<?> getKeys() {
+		return keys;
+	}
+
+	public void setKeys(List<?> keys) {
+		if(keys != null && keys.size() > 0 && keys.get(0).getClass().getName().equals(String.class.getName())){
+			List<String> list = new ArrayList<>();
+			for (int i = 0; i < keys.size(); i++) {
+				String key = "'" + keys.get(i) + "'";// 'string'
+				list.add(key);
+			}
+			this.keys = list;
+		}else{
+			this.keys = keys;
+		}
+	}
 }
