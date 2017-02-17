@@ -17,7 +17,6 @@ public class Field implements Serializable{
 	 */
 	private static final long serialVersionUID = 26562449782653028L;
 	
-	@SuppressWarnings("unused")
 	private static final String COLUMN_PRIMARY_KEY ="PRI";
 	@SuppressWarnings("unused")
 	private static final String COLUMN_AUTO_INCREMENT ="auto_increment";

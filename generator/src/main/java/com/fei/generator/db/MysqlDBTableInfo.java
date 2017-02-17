@@ -12,9 +12,7 @@ import java.util.Set;
 import com.fei.generator.model.ConnectionParam;
 import com.fei.generator.model.Field;
 import com.fei.generator.model.Table;
-import com.fei.generator.util.Constant;
 import com.fei.generator.util.DBUtil;
-import com.fei.generator.util.StringUtil;
 
 
 public class MysqlDBTableInfo implements DBTableInfo{

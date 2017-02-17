@@ -1,6 +1,5 @@
 package com.fei.generator.db;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import com.fei.generator.model.Table;
