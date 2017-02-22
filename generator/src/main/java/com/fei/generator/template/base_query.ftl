@@ -136,6 +136,9 @@ public class BaseQuery {
 	private List<?> keys;
 	
 	public List<?> getKeys() {
+		if(this.keys != null && keys.size() < 0){
+			return null;
+		}
 		return keys;
 	}
 

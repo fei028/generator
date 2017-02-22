@@ -42,7 +42,7 @@
 		<#if (table.primaryKeyFields?size=1)>
 		<!-- 后期添加 -->
 		<if test="keys != null">
-			AND user_id in 
+			AND ${table.primaryKeyFields[0].columnName} in 
 			<foreach collection="keys" item="key" open="(" close=")" separator=",">
 				${r'#{key}'}
 			</foreach>
