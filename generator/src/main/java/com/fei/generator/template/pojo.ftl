@@ -18,13 +18,12 @@ import ${pojo_package}.${className}Key;
 @SuppressWarnings("serial")
 </#if>
 public class ${className} <#if table.primaryKeyFields?size gt 1>extends ${className}Key<#else> implements Serializable</#if>{
-	<#if table.primaryKeyFields?size = 1>
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	</#if>
-
+	
 	<#if table.primaryKeyFields?size = 1>
 	<#list table.primaryKeyFields as field>
 	/** ${field.columnComment} */ 
