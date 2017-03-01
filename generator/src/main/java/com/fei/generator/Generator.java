@@ -215,14 +215,14 @@ public class Generator {
 		_configuration.setUrl("jdbc:mysql://localhost:3306/"+dbName+"?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8");
 		
 		
-		_configuration.setPojoPackage("com.xlkh.platform.pojo.system");
-		_configuration.setDaoPackage("com.xlkh.platform.dao.system");
-		_configuration.setMapperPackage("com.xlkh.platform.mapper.system");
-		_configuration.setQueryPackage("com.xlkh.platform.query.system");
-		_configuration.setBaseQueryPackage("com.xlkh.platform.query");
-		_configuration.setServicePackage("com.xlkh.platform.service.system");
-		_configuration.setServiceImplPackage("com.xlkh.platform.service.system");
-		_configuration.setControllerPackage("com.xlkh.platform.controller.system");
+		_configuration.setPojoPackage("com.xlkh.bdmp.pojo.spark");
+		_configuration.setDaoPackage("com.xlkh.bdmp.dao.spark");
+		_configuration.setMapperPackage("com.xlkh.bdmp.mapper.spark");
+		_configuration.setQueryPackage("com.xlkh.bdmp.query.spark");
+		_configuration.setBaseQueryPackage("com.xlkh.bdmp.query");
+		_configuration.setServicePackage("com.xlkh.bdmp.service.spark");
+		_configuration.setServiceImplPackage("com.xlkh.bdmp.service.spark");
+		_configuration.setControllerPackage("com.xlkh.bdmp.controller.spark");
 		
 		_configuration.setGeneratorDaoImpl(false);
 		
