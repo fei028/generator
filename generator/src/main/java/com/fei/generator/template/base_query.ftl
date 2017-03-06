@@ -86,7 +86,7 @@ public class BaseQuery {
 	 * @author fei
 	 *
 	 */
-	protected class OrderField{
+	protected static class OrderField{
 		/** 排序字段名 */
 		private String field;
 		/** 排序规则(升序/降序) */
