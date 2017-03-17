@@ -1,10 +1,26 @@
 package ${controller_package};
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
 
 import ${service_package}.${className}Service;
+import ${pojo_package}.${className};
 
 /**
  * 
@@ -12,6 +28,7 @@ import ${service_package}.${className}Service;
  *
  */
 @Controller
+@RequestMapping(value = "/${className?uncap_first}")
 public class ${className}Controller {
 	
 	@Autowired
@@ -79,11 +96,11 @@ public class ${className}Controller {
 	 * 批量删除
 	 * @param ${table.primaryKeyFields[0].propertyName?uncap_first}s
 	 */
-	@RequestMapping(value = "/delete${className}s")
+	@RequestMapping(value = "/deleteByKeys")
 	@ResponseBody
-	public String delete${className}s(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]")List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
+	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]")List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
-			${className?uncap_first}Service.delete${className}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+			${className?uncap_first}Service.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		}
 		return "ok";
 	}

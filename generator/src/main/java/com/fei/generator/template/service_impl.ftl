@@ -1,28 +1,36 @@
 <#-- Service层 实现文件-->
 package ${service_package};
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Dao;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ${dao_package}.${className}Dao;
-import ${service_package}.${className}Dao;
-
+import ${service_package}.${className}Service;
+import ${query_package}.${className}Query;
+<#if table.primaryKeyFields?size gt 1>
+import ${pojo_package}.${className}Key;
+</#if>
+import ${pojo_package}.${className};
 /**
  * 
  * @author fei
  *
  */
-@Dao
+@Service
 @Transactional(readOnly = true)
-public class ${className}DaoImpl implements ${className}Dao{
+public class ${className}ServiceImpl implements ${className}Service{
 
 	@Autowired
 	private ${className}Dao ${className?uncap_first}Dao;
 	
 	<#if table.primaryKeyFields?size = 1>
 	@Override
-	public ${className} get${className}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
+	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
 		
 		if(${table.primaryKeyFields[0].propertyName?uncap_first} != null){
 			return ${className?uncap_first}Dao.selectBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].propertyName?uncap_first});
@@ -32,7 +40,7 @@ public class ${className}DaoImpl implements ${className}Dao{
 	</#if>
 	<#if table.primaryKeyFields?size gt 1>
 	@Override
-	public ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
+	public ${className} get${className}ByKey(${className?cap_first}Key ${className?uncap_first}Key){
 		if(${className?uncap_first}Key != null){
 			retrun ${className?uncap_first}Dao.selectBy${className?cap_first}Key(${className?uncap_first}Key);
 		}
@@ -57,9 +65,9 @@ public class ${className}DaoImpl implements ${className}Dao{
 	<#if table.primaryKeyFields?size = 1>
 	@Transactional(readOnly = false)
 	@Override
-	public void delete${className}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
+	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
-			${className?uncap_first}Dao.delete${className}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+			${className?uncap_first}Dao.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		}
 	}
 	</#if>

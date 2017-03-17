@@ -34,7 +34,7 @@ public interface ${className}Dao {
 	 * 批量删除
 	 * @param ${table.primaryKeyFields[0].propertyName?cap_first}s 主键集合
 	 */
-	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].dataType}[] ${table.primaryKeyFields[0].propertyName}s);
+	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName}s);
 	<#else>
 	/**
 	 * 通过主键删除
