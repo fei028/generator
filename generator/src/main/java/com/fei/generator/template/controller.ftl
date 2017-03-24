@@ -48,18 +48,20 @@ public class ${className}Controller {
 	@RequestMapping(value = "/get${className}", method = RequestMethod.POST)
 	<#if table.primaryKeyFields?size = 1>
 	public @ResponseBody ${className} get${className}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
+		
 		${className} ${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
 		
-		return ${className?uncap_first};
+		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
 		
 	}
 	</#if>
 	<#if table.primaryKeyFields?size gt 1>
 	@ResponseBody
 	public ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
+		
 		${className} ${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
 		
-		return ${className?uncap_first};
+		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
 		
 	}
 	</#if>
@@ -75,6 +77,8 @@ public class ${className}Controller {
 		if(${className?uncap_first} != null){
 			Date date = new Date();
 			${className?uncap_first}Service.update(${className?uncap_first});
+		} else {
+			msg = "不能更新空对象";
 		}
 		return msg;
 	}
@@ -89,7 +93,11 @@ public class ${className}Controller {
 	public String add${className}( ${className}  ${className?uncap_first},HttpServletRequest request){
 		
 		String msg ="ok";
-		${className?uncap_first}Service.add${className}(${className?uncap_first});
+		if(${className?uncap_first} != null){
+			${className?uncap_first}Service.add${className}(${className?uncap_first});
+		} else {
+			msg = "不能添加空对象";
+		}
 	    return msg;
 	}
 	<#if table.primaryKeyFields?size = 1>
@@ -102,12 +110,13 @@ public class ${className}Controller {
 	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]")List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
 			${className?uncap_first}Service.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+		} else {
+			return "没有可删除的对象";
 		}
 		return "ok";
 	}
 	</#if>
 	
-	/*
 	@RequestMapping(value = "/search")
 	@ResponseBody
 	public Map<String,Object> search(HttpServletRequest request) {
@@ -117,7 +126,12 @@ public class ${className}Controller {
 		SearchUtils.handleSearchRequestParams(request, ${className?uncap_first}Query);
 		
 		${className?uncap_first}Query.orderbyCreateTime(false);
-		
+		/*
+		// 检验参数 设置值
+		if(StringUtils.isNotBlank()){
+			${className?uncap_first}Query.set;
+		}
+		*/
 		SimplePage page = sysUserService.search(${className?uncap_first}Query);
 
 		Map<String, Object> map = new HashMap<>();
@@ -125,5 +139,4 @@ public class ${className}Controller {
 		
 		return map;
 	}
-	*/
 }

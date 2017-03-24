@@ -36,5 +36,5 @@ public interface ${className}Service {
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s);
 	</#if>
 	
-	//SimplePage search(${className}Query ${className?uncap_first}Query);
+	SimplePage search(${className}Query ${className?uncap_first}Query);
 }

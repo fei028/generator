@@ -71,7 +71,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 		}
 	}
 	</#if>
-	/*
+	
 	@Override
 	public SimplePage search(${className}Query ${className?uncap_first}Query) {
 		
@@ -96,5 +96,5 @@ public class ${className}ServiceImpl implements ${className}Service{
 		
 		return page;
 	}
-	*/
+
 }
