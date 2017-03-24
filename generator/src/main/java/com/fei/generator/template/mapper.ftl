@@ -139,7 +139,7 @@
   <delete id="deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s">
   	 DELETE FROM ${table.tableName}
      WHERE ${table.primaryKeyFields[0].columnName} IN 
-	 <foreach collection="array" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
+	 <foreach collection="list" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
 	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
 	 </foreach>
   </delete>

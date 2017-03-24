@@ -55,7 +55,8 @@ public class ${className}Controller {
 	}
 	</#if>
 	<#if table.primaryKeyFields?size gt 1>
-	public @ResponseBody ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
+	@ResponseBody
+	public ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
 		${className} ${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
 		
 		return ${className?uncap_first};
@@ -108,46 +109,21 @@ public class ${className}Controller {
 	
 	/*
 	@RequestMapping(value = "/search")
-	public String search(
-			@RequestParam(required = false) String beginTime,
-			@RequestParam(required = false) String endTime,
-			HttpSession session,HttpServletRequest request, Model model) {
+	@ResponseBody
+	public Map<String,Object> search(HttpServletRequest request) {
 		
 		${className}Query ${className?uncap_first}Query = new ${className}Query();
-		
-		if(beginTime != null && !"".equals(beginTime.trim())){
-			Date beginDate = null;
-			try {
-				beginDate = DateUtils.strToDate(beginTime + " 00:00:00", "yyyy/MM/dd HH:mm:ss");
-			} catch (Exception e) {
-				beginDate = null;
-				System.out.println("转换出错");
-			}
-			searchSysUserInfo.setBeginDate(beginDate);
-		}
-		
-		if(endTime != null && !"".equals(endTime.trim())){
-			Date endDate = null;
-			try {
-				endDate = DateUtils.strToDate(endTime + " 23:59:59", "yyyy/MM/dd HH:mm:ss");
-			} catch (Exception e) {
-				endDate = null;
-				System.out.println("转换出错");
-			}
-			searchSysUserInfo.setEndDate(endDate);
-		}
 		
 		SearchUtils.handleSearchRequestParams(request, ${className?uncap_first}Query);
 		
 		${className?uncap_first}Query.orderbyCreateTime(false);
-		SimplePage page = null;
 		
-		page = sysUserService.search(${className?uncap_first}Query);
+		SimplePage page = sysUserService.search(${className?uncap_first}Query);
 
-		model.addAttribute("page", page);
-		model.addAttribute("curPageSize", ${className?uncap_first}Query.getPageSize());
+		Map<String, Object> map = new HashMap<>();
+		map.put("page", page);
 		
-		return "${className?uncap_first}/_list";
+		return map;
 	}
 	*/
 }

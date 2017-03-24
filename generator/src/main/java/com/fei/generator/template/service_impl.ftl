@@ -81,7 +81,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 		}
 		
 		if(${className?uncap_first}Query.getEndDate() == null){
-			${className?uncap_first}Query.setEndDate(new Date());
+			//${className?uncap_first}Query.setEndDate(new Date());
 		}
 		// 获取记录总数 
 		long totalCount = ${className?uncap_first}Dao.getCountWithCondition(${className?uncap_first}Query);
@@ -89,13 +89,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 		List<${className}> list = null;
 		if(totalCount > 0){
 			SearchUtils.handleQueryObject(${className?uncap_first}Query, totalCount);
-			List<Integer> ${table.primaryKeyFields[0].propertyName?uncap_first}s = ${className?uncap_first}Dao.get${table.primaryKeyFields[0].propertyName?uncap_first}s(${className?uncap_first}Query);
-			Map<String,Object> map = new HashMap<>(2);
-			// 设置查询字段
-			String fields = ${className?uncap_first}Query.getFields();
-			map.put("fields", fields);
-			map.put("${table.primaryKeyFields[0].propertyName?uncap_first}s", ${table.primaryKeyFields[0].propertyName?uncap_first}s);
-			list = ${className?uncap_first}Dao.selectBy${table.primaryKeyFields[0].propertyName?uncap_first}s(map);
+			list = ${className?uncap_first}Dao.selectNodesWithCondition(nodeQuery);
 		} 
 		SimplePage page = new SimplePage(${className?uncap_first}Query.getPageNo(), ${className?uncap_first}Query.getPageSize(), ${className?uncap_first}Query.getStartRow(), totalCount);
 		page.setList(list);

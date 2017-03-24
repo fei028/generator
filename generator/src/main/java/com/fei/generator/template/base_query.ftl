@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.xlkh.bdmp.common.page.SimplePage;
 
 /**
  * 
@@ -15,7 +14,7 @@ import com.xlkh.bdmp.common.page.SimplePage;
 public class BaseQuery {
 
 	private static final Integer DEFAULT_PAGENO = 1;
-	private static final Integer DEFAULT_PAGESIZE = SimplePage.DEF_PAGESIZE;
+	private static final Integer DEFAULT_PAGESIZE = 10;
 	/************ 自定义查询字段列表 ******************/
 	/**自定义查询字段列表,形如: 字段1,字段2...*/
 	private String fields;
