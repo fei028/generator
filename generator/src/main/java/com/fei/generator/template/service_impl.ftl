@@ -89,7 +89,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 		List<${className}> list = null;
 		if(totalCount > 0){
 			SearchUtils.handleQueryObject(${className?uncap_first}Query, totalCount);
-			list = ${className?uncap_first}Dao.selectNodesWithCondition(nodeQuery);
+			list = ${className?uncap_first}Dao.select${className}sWithCondition(${className?uncap_first}Query);
 		} 
 		SimplePage page = new SimplePage(${className?uncap_first}Query.getPageNo(), ${className?uncap_first}Query.getPageSize(), ${className?uncap_first}Query.getStartRow(), totalCount);
 		page.setList(list);

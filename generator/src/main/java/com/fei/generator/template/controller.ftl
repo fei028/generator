@@ -3,6 +3,8 @@ package ${controller_package};
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Controller;
 
 import ${service_package}.${className}Service;
 import ${pojo_package}.${className};
+import ${query_package}.${className}Query;
 
 /**
  * 
@@ -132,7 +135,7 @@ public class ${className}Controller {
 			${className?uncap_first}Query.set;
 		}
 		*/
-		SimplePage page = sysUserService.search(${className?uncap_first}Query);
+		SimplePage page = ${className?uncap_first}Service.search(${className?uncap_first}Query);
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("page", page);

@@ -86,4 +86,12 @@ public interface ${className}Dao {
 	 */
 	public Long getCountWithCondition(${className}Query ${className?uncap_first}Query);
 	
+	<#if table.primaryKeyFields?size = 1>
+	/**
+	 * 获取符合查询条件的对象的主键集合
+	 * @param ${className?uncap_first}Query
+	 * @return 主键集合
+	 */
+	public List<Integer> get${table.primaryKeyFields[0].propertyName?cap_first}s(${className}Query ${className?uncap_first}Query);
+	</#if>
 }
