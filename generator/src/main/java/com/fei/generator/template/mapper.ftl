@@ -73,7 +73,7 @@
   </sql>
   
   <sql id="limit">
-  	<if test="startRow != null">
+  	<if test="keys == null and startRow != null">
   		LIMIT  ${r'${startRow}'},${r'${pageSize}'}
   	</if>
   </sql>

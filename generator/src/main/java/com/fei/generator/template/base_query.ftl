@@ -153,7 +153,6 @@ public class BaseQuery {
 			}else{
 				this.keys = keys;
 			}
-			this.setStartRow(null);
 		}
 	}
 }
