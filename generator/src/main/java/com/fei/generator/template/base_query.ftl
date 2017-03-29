@@ -135,22 +135,25 @@ public class BaseQuery {
 	private List<?> keys;
 	
 	public List<?> getKeys() {
-		if(this.keys != null && keys.size() < 0){
+		if(this.keys != null && keys.size() <= 0){
 			return null;
 		}
 		return keys;
 	}
 
 	public void setKeys(List<?> keys) {
-		if(keys != null && keys.size() > 0 && keys.get(0).getClass().getName().equals(String.class.getName())){
-			List<String> list = new ArrayList<>();
-			for (int i = 0; i < keys.size(); i++) {
-				String key = "'" + keys.get(i) + "'";// 'string'
-				list.add(key);
+		if(keys != null && !keys.isEmpty()){
+			if(keys.get(0).getClass().getName().equals(String.class.getName())){
+				List<String> list = new ArrayList<>();
+				for (int i = 0; i < keys.size(); i++) {
+					String key = "'" + keys.get(i) + "'";// 'string'
+					list.add(key);
+				}
+				this.keys = list;
+			}else{
+				this.keys = keys;
 			}
-			this.keys = list;
-		}else{
-			this.keys = keys;
+			this.setStartRow(null);
 		}
 	}
 }
