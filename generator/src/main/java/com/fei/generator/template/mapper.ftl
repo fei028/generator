@@ -132,9 +132,9 @@
   </#if>
   <#if table.primaryKeyFields?size = 1>
   <!-- 获取符合条件的对象的主键集合 -->
-  <select id="get${table.primaryKeyFields[0].columnName}s" resultType="${table.primaryKeyFields[0].dataType}" parameterType="${className}Query">
-    SELECT user_id
-  	FROM portal_user
+  <select id="get${table.primaryKeyFields[0].propertyName?cap_first}s" resultType="${table.primaryKeyFields[0].dataType?uncap_first}" parameterType="${className}Query">
+    SELECT ${table.primaryKeyFields[0].columnName}
+  	FROM ${table.tableName}
   	<include refid="where"/>
   	<include refid="orderBy"/>
   	<include refid="limit"/>
