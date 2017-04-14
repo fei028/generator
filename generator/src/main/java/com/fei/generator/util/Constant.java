@@ -11,7 +11,7 @@ public abstract class Constant {
 	 */
 	public static final File TEMPLATE_FILE_DIR ;
 	static {
-		URL resource = Constant.class.getClassLoader().getResource("com/fei/generator/template");
+		URL resource = Thread.currentThread().getContextClassLoader().getResource("com/fei/generator/template");
 		TEMPLATE_FILE_DIR = new File(resource.getFile());
 	}
 	/**
