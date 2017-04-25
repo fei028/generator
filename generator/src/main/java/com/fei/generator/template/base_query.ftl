@@ -13,8 +13,7 @@ import java.util.List;
  */
 public class BaseQuery {
 
-	private static final Integer DEFAULT_PAGENO = 1;
-	private static final Integer DEFAULT_PAGESIZE = 10;
+	private static final int DEFAULT_PAGESIZE = 10;
 	/************ 自定义查询字段列表 ******************/
 	/**自定义查询字段列表,形如: 字段1,字段2...*/
 	private String fields;
@@ -29,7 +28,7 @@ public class BaseQuery {
 
 	/*********** Limit ***********************/
 	/** 页号，默认为1 */
-	private Integer pageNo = DEFAULT_PAGENO;
+	private Integer pageNo;
 	/** 起始行 */
 	private Long startRow;
 	/** 每页数量，默认为10 */
@@ -41,11 +40,10 @@ public class BaseQuery {
 
 	public void setPageNo(Integer pageNo) {
 	
-	    if(pageNo == null){
-			pageNo = DEFAULT_PAGENO;
+	    if(pageNo != null){
+			this.pageNo = pageNo <= 0 ? 1 : pageNo;
+			this.startRow = (long) ((this.pageNo - 1) * pageSize);
 		}
-		this.pageNo = pageNo <= 0 ? DEFAULT_PAGENO : pageNo;
-		this.startRow = (long) ((this.pageNo - 1) * pageSize);
 	}
 
 	public Long getStartRow() {

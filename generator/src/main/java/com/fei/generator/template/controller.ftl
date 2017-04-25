@@ -119,37 +119,7 @@ public class ${className}Controller {
 		return "ok";
 	}
 	</#if>
-	@RequestMapping(value = "/{userType}/search")
-	@ResponseBody
-	public Map<String,Object> search(
-			String realName,
-			@PathVariable(value = "userType") String userType,
-			HttpSession session,HttpServletRequest request, Model model) {
-		
-		// 设置用户类型
-		Byte type = Constant.PORTAL_USER_TYPE_MAP.get(userType);
-		if(type == null){
-			return new HashMap<>(1);
-		}
-		PortalUserQuery portalUserQuery = new PortalUserQuery();
-		
-		portalUserQuery.setUserType(type);
-		portalUserQuery.orderbyCreateTime(false);
-		
-		if(StringUtils.isNotBlank(realName)){
-			portalUserQuery.setRealName(realName);
-			portalUserQuery.setRealNameLike(true);
-		}
-		
-		SearchUtils.handleSearchRequestParams(request, portalUserQuery);
-		
-		SimplePage page = portalUserService.search(portalUserQuery);
 
-		Map<String,Object> map = new HashMap<>(2);
-		map.put("page", page);
-		map.put("genderMap", Constant.GENDER_MAP);
-		return map;
-	}
 	@RequestMapping(value = "/search")
 	@ResponseBody
 	public Map<String,Object> search(HttpServletRequest request) {
@@ -165,7 +135,7 @@ public class ${className}Controller {
 		}
 		*/
 		${className?uncap_first}Query.orderbyCreateTime(false);
-		
+		/** 处理请求参数[pageNo,pageSize,beginDateStr,endDateStr] 不设置pageNo 就是查询全部*/
 		SearchUtils.handleSearchRequestParams(request, ${className?uncap_first}Query);
 		
 		SimplePage page = ${className?uncap_first}Service.search(${className?uncap_first}Query);
