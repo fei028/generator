@@ -80,9 +80,6 @@ public class ${className}ServiceImpl implements ${className}Service{
 			${className?uncap_first}Query = new ${className}Query();
 		}
 		
-		if(${className?uncap_first}Query.getEndDate() == null){
-			//${className?uncap_first}Query.setEndDate(new Date());
-		}
 		// 获取记录总数 
 		long totalCount = ${className?uncap_first}Dao.getCountWithCondition(${className?uncap_first}Query);
 		// 当前页记录集合[当没有符合的记录时,放弃列表的查询]
