@@ -50,9 +50,14 @@ public class ${className}Controller {
      * */
 	@RequestMapping(value = "/get${className}", method = RequestMethod.POST)
 	<#if table.primaryKeyFields?size = 1>
-	public @ResponseBody ${className} get${className}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
+	@ResponseBody
+	public ${className} get${className}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
 		
-		${className} ${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
+		${className} ${className?uncap_first} = null;
+		
+		if(${table.primaryKeyFields[0].propertyName?uncap_first} != null){
+			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
+		}
 		
 		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
 		
@@ -62,7 +67,11 @@ public class ${className}Controller {
 	@ResponseBody
 	public ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
 		
-		${className} ${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
+		${className} ${className?uncap_first} = null;
+		
+		if(${className?uncap_first}Key != null){
+			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
+		}
 		
 		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
 		
