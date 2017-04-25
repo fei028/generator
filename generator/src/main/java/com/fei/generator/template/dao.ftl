@@ -4,6 +4,8 @@ package ${dao_package};
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
@@ -59,10 +61,11 @@ public interface ${className}Dao {
 	
 	/**
 	 * 通过主键集合查询获取${className}对象集合
-	 * @param map 放置两个对象 key[fields] --> String 字段字符串，字段之间以逗号间隔， key[keys] --> List<主键类型> list,只需放入这两个key,对应放好value即可
+	 * @param List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?cap_first}s 主键集合
+	 * @param fields 查询字段集合(字段之间已,分隔)
 	 * @return ${className}对象集合
 	 */
-	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(Map<String,Object> map);
+	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(@Param("${table.primaryKeyFields[0].propertyName?uncap_first}") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?cap_first}s, @Param("fields") String fields);
 	<#else>
 	/**
 	 * 通过主键查询获取${className}对象

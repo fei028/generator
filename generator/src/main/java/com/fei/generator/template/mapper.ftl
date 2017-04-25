@@ -96,7 +96,7 @@
   
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量查询 -->
-  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}" parameterType="map">
+  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}">
   	SELECT 
   	<if test="fields == null">
   		<include refid="Base_Column_List"/>
