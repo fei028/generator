@@ -128,19 +128,21 @@ public class ${className}Controller {
 		
 		${className?uncap_first}Query.orderbyCreateTime(false);
 		
+		${className?uncap_first}Query.orderbyCreateTime(false);
+		
 		/* 模糊查询  自己在query对象自己添加 * 代表属性
 		if(StringUtils.isNotBlank(*)){
 			${className?uncap_first}Query.set*(*);
 			${className?uncap_first}Query.set*Like(true);
 		}
 		*/
-		${className?uncap_first}Query.orderbyCreateTime(false);
+		
 		/** 处理请求参数[pageNo,pageSize,beginDateStr,endDateStr] 不设置pageNo 就是查询全部*/
 		SearchUtils.handleSearchRequestParams(request, ${className?uncap_first}Query);
 		
 		SimplePage page = ${className?uncap_first}Service.search(${className?uncap_first}Query);
 
-		Map<String, Object> map = new HashMap<>(1);
+		Map<String, Object> map = new HashMap<>(1); // 多个put 改变size
 		map.put("page", page);
 		
 		return map;

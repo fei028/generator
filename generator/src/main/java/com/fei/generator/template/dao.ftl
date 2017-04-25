@@ -65,7 +65,7 @@ public interface ${className}Dao {
 	 * @param fields 查询字段集合(字段之间已,分隔)
 	 * @return ${className}对象集合
 	 */
-	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(@Param("${table.primaryKeyFields[0].propertyName?uncap_first}") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?cap_first}s, @Param("fields") String fields);
+	public List<${className}> selectBy${table.primaryKeyFields[0].propertyName?cap_first}s(@Param("${table.primaryKeyFields[0].propertyName?uncap_first}") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s, @Param("fields") String fields);
 	<#else>
 	/**
 	 * 通过主键查询获取${className}对象
