@@ -135,7 +135,7 @@ public class ${className}Controller {
 		
 		${className}Query ${className?uncap_first}Query = new ${className}Query();
 		
-		${className?uncap_first}Query.orderbyCreateTime(false);
+		//${className?uncap_first}Query.setFields(fields);
 		
 		${className?uncap_first}Query.orderbyCreateTime(false);
 		
