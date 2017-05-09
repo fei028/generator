@@ -49,7 +49,7 @@
 		</if>
 		</#if>
 		<#list table.fields as field>
-		<if test="${field.propertyName?uncap_first} != null">
+		<if test="${field.propertyName?uncap_first} != null and ${field.propertyName?uncap_first} != ''">
 			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
 		</if>
 		</#list>
