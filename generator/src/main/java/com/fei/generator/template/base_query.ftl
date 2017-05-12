@@ -3,7 +3,9 @@ package ${base_query_package};
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -28,7 +30,7 @@ public class BaseQuery {
 
 	/*********** Limit ***********************/
 	/** 页号，默认为1 */
-	private Integer pageNo;
+	private Integer pageNo = 1;
 	/** 起始行 */
 	private Long startRow;
 	/** 每页数量，默认为10 */
@@ -61,7 +63,7 @@ public class BaseQuery {
 	public void setPageSize(Integer pageSize) {
 	
 		if(pageSize == null){
-			pageSize = DEFAULT_PAGESIZE;
+			this.pageSize = DEFAULT_PAGESIZE;
 		}
 		this.pageSize = pageSize <= 0 ? DEFAULT_PAGESIZE : pageSize;
 		this.startRow = (long) ((this.pageNo - 1) * this.pageSize);
@@ -141,10 +143,13 @@ public class BaseQuery {
 
 	public void setKeys(List<?> keys) {
 		if(keys != null && !keys.isEmpty()){
+			Set<?> keySet = new HashSet<>(keys);
+			keys = new ArrayList<>(keySet);
 			if(keys.get(0).getClass().getName().equals(String.class.getName())){
 				List<String> list = new ArrayList<>();
+				String key = null;
 				for (int i = 0; i < keys.size(); i++) {
-					String key = "'" + keys.get(i) + "'";// 'string'
+					key = "'" + keys.get(i) + "'";// 'string'
 					list.add(key);
 				}
 				this.keys = list;
