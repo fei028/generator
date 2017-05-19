@@ -1,6 +1,7 @@
 package com.fei.generator.config;
 
 import com.fei.generator.model.ConnectionParam;
+import com.fei.generator.util.Constant;
 /**
  * 
  * @author fei
@@ -34,6 +35,8 @@ public class Configuration {
 	private boolean isGeneratorService = true;
 	private boolean isGeneratorServiceImpl = true;
 	private boolean isGeneratorController = true;
+	/** Dao层java文件后缀名称 */
+	private String daoSuffix = "Dao";
 	/** 数据库名称 */
 	private String dbName;
 
@@ -232,6 +235,18 @@ public class Configuration {
 
 	public void setParam(ConnectionParam param) {
 		this.param = param;
+	}
+
+	public String getDaoSuffix() {
+		return daoSuffix;
+	}
+
+	public void setDaoSuffix(String daoSuffix) {
+		this.daoSuffix = daoSuffix != null ? daoSuffix.trim() : null;
+		
+		if(daoSuffix != null){
+			Constant.FILE_TYPE_NAME_MAP.put(Constant.DAO_INTER, this.daoSuffix);
+		}
 	}
 
 }

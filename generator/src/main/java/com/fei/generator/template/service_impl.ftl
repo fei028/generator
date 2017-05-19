@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ${dao_package}.${className}Dao;
+import ${dao_package}.${className}${daoSuffix};
 import ${service_package}.${className}Service;
 import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
@@ -26,14 +26,14 @@ import ${pojo_package}.${className};
 public class ${className}ServiceImpl implements ${className}Service{
 
 	@Autowired
-	private ${className}Dao ${className?uncap_first}Dao;
+	private ${className}${daoSuffix} ${className?uncap_first}${daoSuffix};
 	
 	<#if table.primaryKeyFields?size = 1>
 	@Override
 	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
 		
 		if(${table.primaryKeyFields[0].propertyName?uncap_first} != null){
-			return ${className?uncap_first}Dao.selectBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].propertyName?uncap_first});
+			return ${className?uncap_first}${daoSuffix}.selectBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].propertyName?uncap_first});
 		}
 		return null;
 	}
@@ -42,7 +42,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 	@Override
 	public ${className} get${className}ByKey(${className?cap_first}Key ${className?uncap_first}Key){
 		if(${className?uncap_first}Key != null){
-			retrun ${className?uncap_first}Dao.selectBy${className?cap_first}Key(${className?uncap_first}Key);
+			retrun ${className?uncap_first}${daoSuffix}.selectBy${className?cap_first}Key(${className?uncap_first}Key);
 		}
 		return ${className?uncap_first};
 	}
@@ -52,14 +52,14 @@ public class ${className}ServiceImpl implements ${className}Service{
 	@Override
 	public void update(${className} ${className?uncap_first}){
 		if(${className?uncap_first} != null){
-			${className?uncap_first}Dao.update(${className?uncap_first});
+			${className?uncap_first}${daoSuffix}.update(${className?uncap_first});
 		}
 	}
 	
 	@Transactional(readOnly = false)
 	@Override
 	public void add${className}(${className}  ${className?uncap_first}){
-		${className?uncap_first}Dao.insertSelective(${className?uncap_first});
+		${className?uncap_first}${daoSuffix}.insertSelective(${className?uncap_first});
 	}
 	
 	<#if table.primaryKeyFields?size = 1>
@@ -67,7 +67,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 	@Override
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
-			${className?uncap_first}Dao.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+			${className?uncap_first}${daoSuffix}.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		}
 	}
 	</#if>
@@ -81,12 +81,12 @@ public class ${className}ServiceImpl implements ${className}Service{
 		}
 		
 		// 获取记录总数 
-		long totalCount = ${className?uncap_first}Dao.getCountWithCondition(${className?uncap_first}Query);
+		long totalCount = ${className?uncap_first}${daoSuffix}.getCountWithCondition(${className?uncap_first}Query);
 		// 当前页记录集合[当没有符合的记录时,放弃列表的查询]
 		List<${className}> list = null;
 		if(totalCount > 0){
 			SearchUtils.handleQueryObject(${className?uncap_first}Query, totalCount);
-			list = ${className?uncap_first}Dao.select${className}sWithCondition(${className?uncap_first}Query);
+			list = ${className?uncap_first}${daoSuffix}.select${className}sWithCondition(${className?uncap_first}Query);
 		} 
 		SimplePage page = new SimplePage(${className?uncap_first}Query.getPageNo(), ${className?uncap_first}Query.getPageSize(), ${className?uncap_first}Query.getStartRow(), totalCount);
 		page.setList(list);

@@ -173,6 +173,7 @@ public class Generator {
 		root.put("className", className);
 		root.put("key", templateKey );
 		root.put("table", table );
+		root.put("daoSuffix", configuration.getDaoSuffix());
 		String fPackage =  Constant.DEFAULT_PACKAGE_MAP.get(templateKey);
 		root.put("dir",new String(fPackage).replace(".", File.separator));
 		if(Constant.MAPPER.equals(templateKey)){

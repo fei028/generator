@@ -1,7 +1,7 @@
 <#-- pojo 模版文件 -->
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="${dao_package}.${className}Dao" >
+<mapper namespace="${dao_package}.${className}${daoSuffix}" >
   <resultMap id="${className?uncap_first}" type="${className}" >
     <#list table.primaryKeyFields as field>
     <id column="${field.columnName}" property="${field.propertyName?uncap_first}" javaType="${field.dataType?uncap_first}" />

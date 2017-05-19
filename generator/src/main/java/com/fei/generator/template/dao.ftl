@@ -16,7 +16,7 @@ import ${pojo_package}.${className}Key;
  * @author fei
  *
  */
-public interface ${className}Dao {
+public interface ${className}${daoSuffix} {
 
 	/**
 	 * 新增,pojo中属性为NULL值不插入对应数据库中字段

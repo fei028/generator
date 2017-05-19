@@ -3,7 +3,7 @@ package ${dao_impl_package};
 
 import java.util.List;
 
-import ${dao_package}.${className}Dao;
+import ${dao_package}.${className}${daoSuffix};
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
 /**
@@ -11,7 +11,7 @@ import ${query_package}.${className}Query;
  * @author fei
  *
  */
-public class ${className}DaoImpl implements ${className}Dao {
+public class ${className}${daoSuffix}Impl implements ${className}${daoSuffix} {
 
 	@Override
 	public void insertSelective(${className} ${className?uncap_first}){

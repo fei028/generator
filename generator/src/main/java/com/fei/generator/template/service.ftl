@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ${dao_package}.${className}Dao;
+import ${dao_package}.${className}${daoSuffix};
 import ${service_package}.${className}Service;
 import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
