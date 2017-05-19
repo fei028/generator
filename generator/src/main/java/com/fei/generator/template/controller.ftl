@@ -100,7 +100,7 @@ public class ${className}Controller {
 	 * @param ${className?uncap_first} 
 	 * @return 
 	 */
-	@RequestMapping(value = "/add${className}",method = RequestMethod.POST)
+	@RequestMapping(value = "/add",method = RequestMethod.POST)
 	@ResponseBody
 	public String add${className}( ${className}  ${className?uncap_first},HttpServletRequest request){
 		
