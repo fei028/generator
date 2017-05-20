@@ -51,6 +51,29 @@ public class ${className}Query extends BaseQuery{
 	</#list>
 	/**        设置批量条件查询where条件  end       **/
 	
+	/**   设置分组字段 start                     */
+	<#list table.primaryKeyFields as field>
+	/**
+	 * 设置分组按属性：${field.propertyName?uncap_first}
+	 *            
+	 */
+	public ${className}Query groupBy${field.propertyName?cap_first}() {
+		groupByFields.add(new GroupField("${field.columnName}"));
+		return this;
+	}
+	</#list>
+	<#list table.fields as field>
+	/**
+	 * 设置分组按属性：${field.propertyName?uncap_first}
+	 *            
+	 */
+	public ${className}Query groupBy${field.propertyName?cap_first}() {
+		groupByFields.add(new GroupField("${field.columnName}"));
+		return this;
+	}
+	</#list>
+	/**   设置分组字段 end                     */
+	
 	/**      设置排序字段 start                  **/
 	<#list table.primaryKeyFields as field>
 	/**

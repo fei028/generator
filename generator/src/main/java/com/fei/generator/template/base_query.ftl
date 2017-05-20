@@ -69,6 +69,37 @@ public class BaseQuery {
 		this.startRow = (long) ((this.pageNo - 1) * this.pageSize);
 	}
 	
+	/*********** Group By ***********************/
+	protected List<GroupField> groupByFields = new ArrayList<>(); 
+	
+	public List<GroupField> getGroupByFields() {
+		return groupByFields;
+	}
+
+	public void setGroupByFields(List<GroupField> groupByFields) {
+		this.groupByFields = groupByFields;
+	}
+
+	/**
+	 * 分组字段类
+	 * @author fei
+	 *
+	 */
+	protected static class GroupField{
+		/** 分组字段名 */
+		private String field;
+		
+		public GroupField(String field) {
+			this.field = field;
+		}
+		public String getField() {
+			return field;
+		}
+		public void setField(String field) {
+			this.field = field;
+		}
+	}
+	
 	/*********** Order By ***********************/
 	protected List<OrderField> orderByFields = new ArrayList<OrderField>(); 
 	

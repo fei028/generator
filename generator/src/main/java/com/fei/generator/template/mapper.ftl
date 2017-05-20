@@ -62,6 +62,15 @@
 		</if>
 	</where>
   </sql>
+  <!-- 查询分组语句 -->
+  <sql id="groupBy">
+  	<if test="groupByFields != null and groupByFields.size>0">
+  		GROUP BY
+  		<foreach collection="groupByFields" item="groupByField" separator=",">
+  			${r'${groupByField.field}'}
+  		</foreach>
+  	</if>
+  </sql>
   <!-- 查询语句order by 部分 -->
   <sql id="orderBy">
   	<if test="orderByFields != null and orderByFields.size>0">
