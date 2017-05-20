@@ -92,6 +92,7 @@
   <select id="select${className?cap_first}sWithCondition" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Query">
   	<include refid="selector"/>
   	<include refid="where"/>
+  	<include refid="groupBy"/>
   	<include refid="orderBy"/>
   	<include refid="limit"/>
   </select>
