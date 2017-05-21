@@ -93,5 +93,42 @@ public class ${className}ServiceImpl implements ${className}Service{
 		
 		return page;
 	}
+	
+	@Override
+	public boolean checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException {
+		if(StringUtils.isNotBlank(property) && StringUtils.isNotBlank(value)){
+			${className?cap_first}Query ${className?uncap_first}Query = new ${className?cap_first}Query();
+			${className?uncap_first}Query.setPageNo(1);
+			${className?uncap_first}Query.setPageSize(2);
+			
+			${className?uncap_first}Query.setFields("${table.primaryKeyFields[0].columnName}," + Underline2CamelUtils.camel2Underline(property));
+			Field field = null;
+			try {
+				field = ${className?uncap_first}Query.getClass().getDeclaredField(property);
+				if(field != null){
+					field.setAccessible(true);
+					field.set(${className?uncap_first}Query, value);
+					logger.debug("属性名称:{},值:{}", property, value);
+				} else {
+					logger.error("属性名称(property):{}, ${className?uncap_first}Query.getClass().getDeclaredField(property)获取Field为null", property);
+					throw new CustomException("检查属性名称是否设置错误");
+				}
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				logger.error("反射获取Field异常:", e);
+				throw new CustomException("检查属性名称是否设置错误");
+			}
+			
+			List<${className?uncap_first}> ${className?uncap_first}s = ${className?uncap_first}Dao.select${className?uncap_first}sWithCondition(${className?uncap_first}Query);
+			if(${className?uncap_first}s == null || ${className?uncap_first}s.isEmpty()){
+				return true;
+			} else {
+				if(${className?uncap_first}s.size() == 1 ){
+					${className?uncap_first} ${className?uncap_first} = ${className?uncap_first}s.get(0);
+					return ${className?uncap_first}.getUserId().equals(userId);
+				}
+			}
+		}
+		return false;
+	}
 
 }

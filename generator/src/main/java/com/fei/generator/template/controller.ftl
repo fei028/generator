@@ -84,15 +84,8 @@ public class ${className}Controller {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public String update(${className} ${className?uncap_first},HttpServletRequest request){
-		String msg = "ok";
-		if(${className?uncap_first} != null){
-			Date date = new Date();
-			${className?uncap_first}Service.update(${className?uncap_first});
-		} else {
-			msg = "不能更新空对象";
-		}
-		return msg;
+	public String update(${className} ${className?uncap_first},HttpServletRequest request) throws CustomException {
+		return saveOrUpdate(${className?uncap_first}, request);
 	}
 	
 	/**
@@ -102,15 +95,8 @@ public class ${className}Controller {
 	 */
 	@RequestMapping(value = "/add",method = RequestMethod.POST)
 	@ResponseBody
-	public String add${className}( ${className}  ${className?uncap_first},HttpServletRequest request){
-		
-		String msg ="ok";
-		if(${className?uncap_first} != null){
-			${className?uncap_first}Service.add${className}(${className?uncap_first});
-		} else {
-			msg = "不能添加空对象";
-		}
-	    return msg;
+	public String add${className}(${className}  ${className?uncap_first},HttpServletRequest request) throws CustomException {
+		return saveOrUpdate(${className?uncap_first}, request);
 	}
 	<#if table.primaryKeyFields?size = 1>
 	/**
@@ -137,7 +123,7 @@ public class ${className}Controller {
 		
 		//${className?uncap_first}Query.setFields(fields);
 		
-		${className?uncap_first}Query.orderbyCreateTime(false);
+		//${className?uncap_first}Query.orderbyCreateTime(false);
 		
 		/* 模糊查询  自己在query对象自己添加 * 代表属性
 		if(StringUtils.isNotBlank(*)){
@@ -155,5 +141,55 @@ public class ${className}Controller {
 		map.put("page", page);
 		
 		return map;
+	}
+	
+	@RequestMapping(value = "checkUniqueness")
+	@ResponseBody
+	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
+		boolean unique = ${className?cap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});
+		if(unique){
+			return Result.ok();
+		}
+		return Result.error();
+	}
+	
+	private String saveOrUpdate(${className?cap_first} ${className?uncap_first}, HttpServletRequest request) throws CustomException {
+		
+		//判断用户名是否已经存在
+		/*
+		if(!${className?uncap_first}Service.checkUniqueness("userName", ${className?uncap_first}.get*(), ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}())){
+			return "您输入的*已存在,请重新输入后保存";
+		}
+		*/
+		// 添加人
+		HttpSession session = request.getSession();
+		ActiveUser activeUser = (ActiveUser) session.getAttribute(Constant.ACTIVEUSER_SESSION);
+		
+		String logContent = null;
+		
+		if(${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() == null){// 新增用户
+			
+			// 添加时间
+			Date date = new Date();
+			${className?uncap_first}.setCreateTime(date);
+			${className?uncap_first}.setCreateUser(activeUser.getUserId());
+			Integer ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add(${className?uncap_first});
+			
+			logContent = activeUser.getUserName() + "创建了id[" + ${table.primaryKeyFields[0].propertyName?uncap_first} +"] ";
+			
+		} else {
+			// 更新时间
+			Date date = new Date();
+			
+			${className?uncap_first}.setUpdateTime(date);
+			${className?uncap_first}.setUpdateUser(activeUser.getUserId());
+			${className?uncap_first}Service.update(${className?uncap_first});
+			
+			logContent = activeUser.getUserName() + "修改了id[" + ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() + "] ";
+		}
+		
+		LogUtils.setLogContent(request, logContent);
+		
+		return "ok";
 	}
 }
