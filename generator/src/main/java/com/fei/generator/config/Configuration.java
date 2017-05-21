@@ -10,7 +10,7 @@ import com.fei.generator.util.Constant;
 public class Configuration {
 	
 	/** 作者[创建人] */
-	private String author = "fei";
+	private String author = "XuPengFei";
 	/** 数据库连接配置 **/
 	private String classDriverName = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
@@ -37,6 +37,12 @@ public class Configuration {
 	private boolean isGeneratorController = true;
 	/** Dao层java文件后缀名称 */
 	private String daoSuffix = "Dao";
+	/** 表名前缀 */
+	private String tablePrefix;
+	/** 是否忽视表名前缀 默认不忽略 */
+	private boolean tablePrefixIgnore = false;
+	/** 表名中单词间的分隔符 默认'_'*/
+	private String separator = "_";
 	/** 数据库名称 */
 	private String dbName;
 
@@ -247,6 +253,30 @@ public class Configuration {
 		if(daoSuffix != null){
 			Constant.FILE_TYPE_NAME_MAP.put(Constant.DAO_INTER, this.daoSuffix);
 		}
+	}
+
+	public String getTablePrefix() {
+		return tablePrefix;
+	}
+
+	public void setTablePrefix(String tablePrefix) {
+		this.tablePrefix = tablePrefix != null ? tablePrefix.trim() : null;
+	}
+
+	public boolean isTablePrefixIgnore() {
+		return tablePrefixIgnore;
+	}
+
+	public void setTablePrefixIgnore(boolean tablePrefixIgnore) {
+		this.tablePrefixIgnore = tablePrefixIgnore;
+	}
+
+	public String getSeparator() {
+		return separator;
+	}
+
+	public void setSeparator(String separator) {
+		this.separator = separator != null ? separator.trim() : "";
 	}
 
 }

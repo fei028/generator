@@ -197,8 +197,12 @@ public class Generator {
 		if(tableName == null){
 			return null;
 		}
+		String tablePrefix = configuration.getTablePrefix();
+		if(tablePrefix != null && configuration.isTablePrefixIgnore()){
+			tableName = tableName.substring((tablePrefix + configuration.getSeparator()).length(), tableName.length());
+		}
 		// 文件名
-		String[] split = tableName.split("_");
+		String[] split = tableName.split(configuration.getSeparator());
 		StringBuilder sb = new StringBuilder("");
 		sb.append(StringUtil.toUpperCaseFirstOne(split[0].toString()));
 		for (int i = 1; i < split.length; i++) {
