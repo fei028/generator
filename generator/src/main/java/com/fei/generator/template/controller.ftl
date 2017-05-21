@@ -59,7 +59,7 @@ public class ${className}Controller {
 			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
 		}
 		
-		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
+		return ${className?uncap_first};
 		
 	}
 	</#if>
@@ -73,7 +73,7 @@ public class ${className}Controller {
 			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
 		}
 		
-		return ${className?uncap_first} != null ? ${className?uncap_first} : new ${className}();
+		return ${className?uncap_first};
 		
 	}
 	</#if>
