@@ -14,7 +14,7 @@ import ${pojo_package}.${className};
 
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public interface ${className}Service {
@@ -28,7 +28,7 @@ public interface ${className}Service {
 
 	public void update(${className} ${className?uncap_first});
 	
-	public void add${className}(${className}  ${className?uncap_first});
+	public String add${className}(${className}  ${className?uncap_first});
 	
 	<#if table.primaryKeyFields?size = 1>
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s);

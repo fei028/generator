@@ -146,7 +146,7 @@ public class ${className}Controller {
 	@RequestMapping(value = "checkUniqueness")
 	@ResponseBody
 	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
-		boolean unique = ${className?cap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});
+		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});
 		if(unique){
 			return Result.ok();
 		}
@@ -170,19 +170,18 @@ public class ${className}Controller {
 		if(${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() == null){// 新增用户
 			
 			// 添加时间
-			Date date = new Date();
-			${className?uncap_first}.setCreateTime(date);
-			${className?uncap_first}.setCreateUser(activeUser.getUserId());
-			Integer ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add(${className?uncap_first});
+			//Date date = new Date();
+			//${className?uncap_first}.setCreateTime(date);
+			//${className?uncap_first}.setCreateUser(activeUser.getUserId());
+			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "创建了id[" + ${table.primaryKeyFields[0].propertyName?uncap_first} +"] ";
 			
 		} else {
 			// 更新时间
-			Date date = new Date();
-			
-			${className?uncap_first}.setUpdateTime(date);
-			${className?uncap_first}.setUpdateUser(activeUser.getUserId());
+			//Date date = new Date();
+			//${className?uncap_first}.setUpdateTime(date);
+			//${className?uncap_first}.setUpdateUser(activeUser.getUserId());
 			${className?uncap_first}Service.update(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "修改了id[" + ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() + "] ";

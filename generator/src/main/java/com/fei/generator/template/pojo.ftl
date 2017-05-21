@@ -11,7 +11,7 @@ import ${pojo_package}.${className}Key;
 
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 <#if table.primaryKeyFields?size gt 1>

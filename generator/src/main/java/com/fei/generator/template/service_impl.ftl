@@ -1,10 +1,14 @@
 <#-- Service层 实现文件-->
 package ${service_package};
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +22,14 @@ import ${pojo_package}.${className}Key;
 import ${pojo_package}.${className};
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 @Service
 @Transactional(readOnly = true)
 public class ${className}ServiceImpl implements ${className}Service{
+
+	private static final Logger logger = LoggerFactory.getLogger(${className}ServiceImpl.class);
 
 	@Autowired
 	private ${className}${daoSuffix} ${className?uncap_first}${daoSuffix};
@@ -58,8 +64,9 @@ public class ${className}ServiceImpl implements ${className}Service{
 	
 	@Transactional(readOnly = false)
 	@Override
-	public void add${className}(${className}  ${className?uncap_first}){
+	public String add${className}(${className}  ${className?uncap_first}){
 		${className?uncap_first}${daoSuffix}.insertSelective(${className?uncap_first});
+		return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}();
 	}
 	
 	<#if table.primaryKeyFields?size = 1>
@@ -118,13 +125,13 @@ public class ${className}ServiceImpl implements ${className}Service{
 				throw new CustomException("检查属性名称是否设置错误");
 			}
 			
-			List<${className?uncap_first}> ${className?uncap_first}s = ${className?uncap_first}Dao.select${className?uncap_first}sWithCondition(${className?uncap_first}Query);
+			List<${className?cap_first}> ${className?uncap_first}s = ${className?uncap_first}Dao.select${className?cap_first}sWithCondition(${className?uncap_first}Query);
 			if(${className?uncap_first}s == null || ${className?uncap_first}s.isEmpty()){
 				return true;
 			} else {
 				if(${className?uncap_first}s.size() == 1 ){
-					${className?uncap_first} ${className?uncap_first} = ${className?uncap_first}s.get(0);
-					return ${className?uncap_first}.getUserId().equals(userId);
+					${className?cap_first} ${className?uncap_first} = ${className?uncap_first}s.get(0);
+					return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}().equals(${table.primaryKeyFields[0].propertyName?uncap_first});
 				}
 			}
 		}

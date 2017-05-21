@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public class ${className}Key implements Serializable {

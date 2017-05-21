@@ -12,7 +12,7 @@ import ${pojo_package}.${className}Key;
 </#if>
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public interface ${className}${daoSuffix} {

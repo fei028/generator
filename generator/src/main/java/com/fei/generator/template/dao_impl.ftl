@@ -8,7 +8,7 @@ import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public class ${className}${daoSuffix}Impl implements ${className}${daoSuffix} {

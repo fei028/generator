@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public class BaseQuery {

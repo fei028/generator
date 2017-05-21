@@ -5,7 +5,7 @@ import ${base_query_package}.BaseQuery;
 import java.util.Date;
 /**
  * 
- * @author fei
+ * @author ${author}
  *
  */
 public class ${className}Query extends BaseQuery{
