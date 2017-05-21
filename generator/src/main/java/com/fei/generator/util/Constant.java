@@ -34,6 +34,9 @@ public abstract class Constant {
 	
 	public static final Integer QUERY = 8;
 	public static final Integer BASE_QUERY = 9;
+	
+	public static final Integer JS = 19;
+	public static final Integer JSP = 11;
 	/* end */
 	/**
 	 * 模版文件名称map<文件标志,文件名称>
@@ -51,6 +54,8 @@ public abstract class Constant {
 			put(Constant.MAPPER, "mapper.ftl");
 			put(Constant.QUERY, "query.ftl");
 			put(Constant.BASE_QUERY, "base_query.ftl");
+			put(Constant.JS, "js.ftl");
+			put(Constant.JSP, "jsp.ftl");
 		}
 	};
 	
@@ -97,6 +102,8 @@ public abstract class Constant {
 			put(Constant.MAPPER,"Mapper");
 			put(Constant.QUERY,"Query");
 			put(Constant.BASE_QUERY, "Query");
+			put(Constant.JS, "");
+			put(Constant.JSP, "");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -112,6 +119,8 @@ public abstract class Constant {
 			put(Constant.MAPPER,".xml");
 			put(Constant.QUERY,".java");
 			put(Constant.BASE_QUERY, ".java");
+			put(Constant.JS, ".js");
+			put(Constant.JSP, ".jsp");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -126,6 +135,8 @@ public abstract class Constant {
 			put(Constant.MAPPER,"com.mypackage.mapper");
 			put(Constant.QUERY,"com.mypackage.query");
 			put(Constant.BASE_QUERY, "com.mypackage.query");
+			put(Constant.JS, "com.mypackage.js");
+			put(Constant.JSP, "com.mypackage.jsp");
 		}
 	};
 	

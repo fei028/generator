@@ -18,7 +18,7 @@ import com.fei.generator.util.StringUtil;
 import freemarker.template.TemplateException;
 
 /**
- * 生成文件[pojo,mapper xml,dao,service,controller]
+ * 生成文件[pojo,mapper xml,dao,service,controller,js,jsp]
  * 
  * @author fei
  *
@@ -57,7 +57,12 @@ public class Generator {
 		if(configuration.getBaseQueryPackage() != null){
 			Constant.DEFAULT_PACKAGE_MAP.put(Constant.BASE_QUERY, configuration.getBaseQueryPackage());
 		}
-		
+		if(configuration.getJsPackage() != null){
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.JS, configuration.getJsPackage());
+		}
+		if(configuration.getJspPackage() != null){
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.JSP, configuration.getJspPackage());
+		}
 	}
 	
 	public Generator() {
@@ -95,6 +100,12 @@ public class Generator {
 		}
 		if(configuration.isGeneratorController()){
 			generatorFile(tables,Constant.CONTROLLER);
+		}
+		if(configuration.isGeneratorJs()){
+			generatorFile(tables,Constant.JS);
+		}
+		if(configuration.isGeneratorJsp()){
+			generatorFile(tables,Constant.JSP);
 		}
 	}
 
@@ -171,10 +182,14 @@ public class Generator {
 		root.put("author", configuration.getAuthor());
 		
 		String className = getClassName(table.getTableName());
+		if(Constant.JS == templateKey || Constant.JSP == templateKey){
+			className = StringUtil.toLowerCaseFirstOne(className);
+		}
 		root.put("className", className);
-		root.put("key", templateKey );
-		root.put("table", table );
+		root.put("key", templateKey);
+		root.put("table", table);
 		root.put("daoSuffix", configuration.getDaoSuffix());
+		root.put("module", configuration.getModule());
 		String fPackage =  Constant.DEFAULT_PACKAGE_MAP.get(templateKey);
 		root.put("dir",new String(fPackage).replace(".", File.separator));
 		if(Constant.MAPPER.equals(templateKey)){

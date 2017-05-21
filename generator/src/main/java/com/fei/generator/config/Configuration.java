@@ -26,6 +26,10 @@ public class Configuration {
 	private String mapperPackage;
 	private String queryPackage;
 	private String baseQueryPackage;
+	private String jsPackage;
+	private String jspPackage;
+	/** 模块名称 默认取包名称最后一个文件夹名称 */
+	private String module;
 	/** 生成文件 默认生成 **/
 	private boolean isGeneratorPojo = true;
 	private boolean isGeneratorQuery = true;
@@ -35,6 +39,8 @@ public class Configuration {
 	private boolean isGeneratorService = true;
 	private boolean isGeneratorServiceImpl = true;
 	private boolean isGeneratorController = true;
+	private boolean isGeneratorJs = true;
+	private boolean isGeneratorJsp = true;
 	/** Dao层java文件后缀名称 */
 	private String daoSuffix = "Dao";
 	/** 表名前缀 */
@@ -277,6 +283,50 @@ public class Configuration {
 
 	public void setSeparator(String separator) {
 		this.separator = separator != null ? separator.trim() : "";
+	}
+
+	public boolean isGeneratorJs() {
+		return isGeneratorJs;
+	}
+
+	public void setGeneratorJs(boolean isGeneratorJs) {
+		this.isGeneratorJs = isGeneratorJs;
+	}
+
+	public boolean isGeneratorJsp() {
+		return isGeneratorJsp;
+	}
+
+	public void setGeneratorJsp(boolean isGeneratorJsp) {
+		this.isGeneratorJsp = isGeneratorJsp;
+	}
+
+	public String getJsPackage() {
+		return jsPackage;
+	}
+
+	public void setJsPackage(String jsPackage) {
+		this.jsPackage = jsPackage;
+	}
+
+	public String getJspPackage() {
+		return jspPackage;
+	}
+
+	public void setJspPackage(String jspPackage) {
+		this.jspPackage = jspPackage;
+	}
+
+	public String getModule() {
+		if(module == null){
+			String[] pacArr = pojoPackage.split("\\.");
+			module = pacArr[pacArr.length - 1];
+		}
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module != null ? module.trim() : null;
 	}
 
 }
