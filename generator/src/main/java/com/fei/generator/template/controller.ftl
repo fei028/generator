@@ -173,7 +173,7 @@ public class ${className}Controller {
 			//Date date = new Date();
 			//${className?uncap_first}.setCreateTime(date);
 			//${className?uncap_first}.setCreateUser(activeUser.getUserId());
-			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add(${className?uncap_first});
+			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add${className?cap_first}(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "创建了id[" + ${table.primaryKeyFields[0].propertyName?uncap_first} +"] ";
 			
