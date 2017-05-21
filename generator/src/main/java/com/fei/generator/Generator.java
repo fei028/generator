@@ -116,6 +116,7 @@ public class Generator {
 	private void generatorBaseQueryFile() throws IOException, TemplateException {
 		
 		Map<String, Object> root = new HashMap<String, Object>();
+		root.put("author", configuration.getAuthor());
 		root.put("key", Constant.BASE_QUERY);
 		root.put("className", "Base");
 		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
