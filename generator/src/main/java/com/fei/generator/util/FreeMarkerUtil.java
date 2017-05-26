@@ -1,18 +1,13 @@
 package com.fei.generator.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Map;
-
-
-
+import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
+
+import java.io.*;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class FreeMarkerUtil {
@@ -24,9 +19,13 @@ public class FreeMarkerUtil {
 
 		try {
 			System.out.println(Constant.TEMPLATE_FILE_DIR.getAbsolutePath());
-			cfg.setDirectoryForTemplateLoading(Constant.TEMPLATE_FILE_DIR);
+			System.out.print("new");
+			ClassTemplateLoader loader = new ClassTemplateLoader(FreeMarkerUtil.class, "\\com\\fei\\generator\\template");
+			cfg.setTemplateLoader(loader);
+			//cfg.setDirectoryForTemplateLoading(Constant.TEMPLATE_FILE_DIR);
 			cfg.setDefaultEncoding("UTF-8");
-		} catch (IOException e) {
+			cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
