@@ -53,9 +53,9 @@ public class ${className}Query extends BaseQuery{
 		<#else>
 		this.${field.propertyName?uncap_first} = ${field.propertyName?uncap_first};
 		</#if>
-		// 用户模糊查询时，设置模糊查询字段值
 		<#if field.dataType == 'String'>
-		if(this.${field.propertyName?uncap_first} != null){
+		// 用户模糊查询时，设置模糊查询字段值
+		if(this.${field.propertyName?uncap_first} != null && likeType != null && likeType != SqlLike.NO_LIKE){
 			String ${field.propertyName?uncap_first}AfterEscape = sqlLikeWildcardEscape(${field.propertyName?uncap_first});
 			if (likeType == SqlLike.ALL){
 				this.${field.propertyName?uncap_first}Like = LikePERCENT_SIGN + ${field.propertyName?uncap_first}AfterEscape + PERCENT_SIGN + LIKE_AFTER_ESCAPE;

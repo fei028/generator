@@ -55,7 +55,7 @@
                     AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
                 </if>
                 <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
-                    AND ${field.columnName} LIKE ${'#'}{${field.propertyName?uncap_first}}
+                    AND ${field.columnName}Like LIKE ${'#'}{${field.propertyName?uncap_first}}
                 </if>
             <#else>
                 AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
@@ -196,12 +196,21 @@
 
   <!-- 有选择插入字段 NULL忽略-->
   <insert id="insertSelective" parameterType="${className}" <#if table.primaryKeyFields?size = 1>useGeneratedKeys="true" keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>>
+    <#if table.primaryKeyFields[0].dataType == 'String'>
+    <selectKey keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}" order="BEFORE" resultType="string">
+  		SELECT replace(uuid(),'-','') FROM dual
+    </selectKey>
+    </#if>
     insert into ${table.tableName}
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <#list table.primaryKeyFields as field>
+      <#if field.dataType == 'String'>
+      	${field.columnName},
+      <#else>
       <if test="${field.propertyName?uncap_first} != null" >
         ${field.columnName},
       </if>
+	  </#if>
       </#list>
       <#list table.fields as field>
       <if test="${field.propertyName?uncap_first} != null" >
@@ -211,9 +220,13 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <#list table.primaryKeyFields as field>
+      <#if field.dataType == 'String'>
+      	${'#'}{${field.propertyName?uncap_first}},
+      <#else>
       <if test="${field.propertyName?uncap_first} != null" >
-       ${'#'}{${field.propertyName?uncap_first}},
+        ${'#'}{${field.propertyName?uncap_first}},
       </if>
+      </#if>
 	  </#list>
       <#list table.fields as field>
       <if test="${field.propertyName?uncap_first} != null" >
@@ -222,17 +235,26 @@
 	  </#list>
     </trim>
   </insert>
-    <!-- 批量插入 -->
+  <!-- 批量插入 -->
   <insert id="batchInsert" parameterType="list">
-      INSERT INTO ${table.tableName}
+  	<#if table.primaryKeyFields[0].dataType == 'String'>
+    <selectKey keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}" order="BEFORE" resultType="string">
+  		SELECT replace(uuid(),'-','') FROM dual
+    </selectKey>
+    </#if>
+    INSERT INTO ${table.tableName}
       <trim prefix="(" suffix=")" suffixOverrides="," >
           <#list table.primaryKeyFields as field>
-          <if test="${field.propertyName?uncap_first} != null"<#if field.dataType == 'String'> ${field.propertyName?uncap_first} != ''</#if>>
+          <#if field.dataType == 'String'>
+          ${field.columnName},
+          <#else>
+          <if test="${field.propertyName?uncap_first} != null">
           ${field.columnName},
           </if>
+		  </#if>
           </#list>
           <#list table.fields as field>
-          ${field.columnName},
+          ${field.columnName}<#if table.fields?size gt (field_index+1)>,</#if>
           </#list>
       </trim>
      VALUES
@@ -244,11 +266,11 @@
          </if>
      </#list>
      <#list table.fields as field>
-         ${'#'}{item.${field.propertyName?uncap_first}},
+         ${'#'}{item.${field.propertyName?uncap_first}}<#if table.fields?size gt (field_index+1)>,</#if>
      </#list>
      )
      </foreach>
-    </insert>
+  </insert>
 <!--  *****插入有关  end***** -->
 
 <!--  *****更新有关  start***** -->
