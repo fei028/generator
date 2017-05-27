@@ -51,16 +51,15 @@
 		<#list table.fields as field>
 		<if test="${field.propertyName?uncap_first} != null <#if field.dataType == 'String'>and ${field.propertyName?uncap_first} != ''</#if>">
             <#if field.dataType == 'String'>
-                <if test="${field.propertyName?uncap_first}Like == null or ${field.propertyName?uncap_first}Like == ''">
-                    AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
-                </if>
-                <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
-                    AND ${field.columnName}Like LIKE ${'#'}{${field.propertyName?uncap_first}}
-                </if>
-            <#else>
+            <if test="${field.propertyName?uncap_first}Like == null or ${field.propertyName?uncap_first}Like == ''">
                 AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
+            </if>
+            <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
+                AND ${field.columnName}Like LIKE ${'#'}{${field.propertyName?uncap_first}Like}
+            </if>
+            <#else>
+            AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
             </#if>
-
 		</if>
 		</#list>
 		<!-- 后期添加 -->
@@ -115,22 +114,6 @@
   </select>
   
   <#if table.primaryKeyFields?size = 1>
-  <!-- 通过主键批量查询 -->
-  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}s" resultMap="${className?uncap_first}">
-  	SELECT 
-  	<if test="fields == null">
-  		<include refid="Base_Column_List"/>
-  	</if>
-  	<if test="fields != null">
-  		${'$'}{fields}
-  	</if>
-  	FROM ${table.tableName}
-  	WHERE ${table.primaryKeyFields[0].columnName} IN
-  	<foreach collection="keys" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
-	 	${'$'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
-	</foreach>
-  </select>
-  
   <!-- 通过主键查询  -->
   <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
     SELECT 
@@ -261,9 +244,13 @@
      <foreach collection="list" item="item" separator=",">
      (
      <#list table.primaryKeyFields as field>
-         <if test="${field.propertyName?uncap_first} != null"<#if field.dataType == 'String'> and ${field.propertyName?uncap_first} != ''</#if>>
-         ${'#'}{item.${field.propertyName?uncap_first}},
-         </if>
+	     <#if field.dataType == 'String'>
+	     ${'#'}{item.${field.propertyName?uncap_first}},
+	     <#else>
+	     <if test="${field.propertyName?uncap_first} != null">
+	     ${'#'}{item.${field.propertyName?uncap_first}},
+	     </if>
+		 </#if>
      </#list>
      <#list table.fields as field>
          ${'#'}{item.${field.propertyName?uncap_first}}<#if table.fields?size gt (field_index+1)>,</#if>
