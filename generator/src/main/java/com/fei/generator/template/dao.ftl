@@ -20,10 +20,13 @@ public interface ${className}${daoSuffix} {
 	/**
 	 * 新增,pojo中属性为NULL值不插入对应数据库中字段
 	 * @param ${className?uncap_first}
-	 * @return
 	 */
 	public void insertSelective(${className} ${className?uncap_first});
-	
+	/**
+	* 批量插入
+	* @param ${className?uncap_first}s
+	*/
+	public void batchInsert(List<${className}> ${className?uncap_first}s);
 	<#if table.primaryKeyFields?size = 1>
 	/**
 	 * 通过主键删除

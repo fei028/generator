@@ -49,8 +49,18 @@
 		</if>
 		</#if>
 		<#list table.fields as field>
-		<if test="${field.propertyName?uncap_first} != null and ${field.propertyName?uncap_first} != ''">
-			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
+		<if test="${field.propertyName?uncap_first} != null <#if field.dataType == 'String'>and ${field.propertyName?uncap_first} != ''</#if>">
+            <#if field.dataType == 'String'>
+                <if test="${field.propertyName?uncap_first}Like == null or ${field.propertyName?uncap_first}Like == ''">
+                    AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
+                </if>
+                <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
+                    AND ${field.columnName} LIKE ${'#'}{${field.propertyName?uncap_first}}
+                </if>
+            <#else>
+                AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
+            </#if>
+
 		</if>
 		</#list>
 		<!-- 后期添加 -->
@@ -212,7 +222,33 @@
 	  </#list>
     </trim>
   </insert>
-  
+    <!-- 批量插入 -->
+  <insert id="batchInsert" parameterType="list">
+      INSERT INTO ${table.tableName}
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+          <#list table.primaryKeyFields as field>
+          <if test="${field.propertyName?uncap_first} != null"<#if field.dataType == 'String'> ${field.propertyName?uncap_first} != ''</#if>>
+          ${field.columnName},
+          </if>
+          </#list>
+          <#list table.fields as field>
+          ${field.columnName},
+          </#list>
+      </trim>
+     VALUES
+     <foreach collection="list" item="item" separator=",">
+     (
+     <#list table.primaryKeyFields as field>
+         <if test="${field.propertyName?uncap_first} != null"<#if field.dataType == 'String'> and ${field.propertyName?uncap_first} != ''</#if>>
+         ${'#'}{item.${field.propertyName?uncap_first}},
+         </if>
+     </#list>
+     <#list table.fields as field>
+         ${'#'}{item.${field.propertyName?uncap_first}},
+     </#list>
+     )
+     </foreach>
+    </insert>
 <!--  *****插入有关  end***** -->
 
 <!--  *****更新有关  start***** -->

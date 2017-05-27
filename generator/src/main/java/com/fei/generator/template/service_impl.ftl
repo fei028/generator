@@ -68,8 +68,16 @@ public class ${className}ServiceImpl implements ${className}Service{
 		${className?uncap_first}${daoSuffix}.insertSelective(${className?uncap_first});
 		return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}();
 	}
-	
-	<#if table.primaryKeyFields?size = 1>
+
+	@Transactional(readOnly = false)
+	@Override
+	public void batchInsert(List<${className}> ${className?uncap_first}s){
+		if(${className?uncap_first}s != null && !${className?uncap_first}s.isEmpty()){
+			${className?uncap_first}${daoSuffix}.batchInsert(${className?uncap_first}s);
+		}
+	}
+
+<#if table.primaryKeyFields?size = 1>
 	@Transactional(readOnly = false)
 	@Override
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s){

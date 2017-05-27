@@ -189,4 +189,26 @@ public class BaseQuery {
 			}
 		}
 	}
+
+	private static final String ESCAPE_CHARACTER = "/";
+	/** 拼接到LIKE语句后 */
+	protected static final String LIKE_AFTER_ESCAPE = " EACAPE '" + ESCAPE_CHARACTER + "'";
+	/** 百分号 */
+	protected static final String PERCENT_SIGN = "%";
+	/** 转义符+百分号 */
+	private static final String ESCAPE_CHARACTER_PERCENT_SIGN = ESCAPE_CHARACTER + PERCENT_SIGN;
+	/** 下划线 */
+	protected static final String UNDERLINE = "_";
+	/** 转义符+下划线 */
+	private static final String ESCAPE_CHARACTER_UNDERLINE = ESCAPE_CHARACTER + UNDERLINE;
+
+	protected String sqlLikeWildcardEscape(String content){
+		String afterEscapeContent = null;
+		if(content != null){
+			afterEscapeContent = content.replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER);
+			afterEscapeContent = afterEscapeContent.replaceAll(PERCENT_SIGN, ESCAPE_CHARACTER_PERCENT_SIGN);
+			afterEscapeContent = afterEscapeContent.replaceAll(UNDERLINE, ESCAPE_CHARACTER_UNDERLINE);
+		}
+		return afterEscapeContent;
+	}
 }
