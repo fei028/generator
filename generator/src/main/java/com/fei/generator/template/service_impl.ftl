@@ -19,6 +19,10 @@ import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
 import ${pojo_package}.${className}Key;
 </#if>
+import ${common_package}.common.page.SimplePage;
+import ${common_package}.utils.SearchUtils;
+import ${common_package}.utils.Underline2CamelUtils;
+import ${common_package}.web.exception.CustomException;
 import ${pojo_package}.${className};
 /**
  * 

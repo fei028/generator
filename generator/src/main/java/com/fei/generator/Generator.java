@@ -32,6 +32,7 @@ public class Generator {
 		
 		String commonPackage = configuration.getCommonPackage();
 		String pojoPackage = configuration.getPojoPackage();
+		Constant.DEFAULT_BASE_PACKAGE = commonPackage;
 		if(pojoPackage != null){
 			Constant.DEFAULT_PACKAGE_MAP.put(Constant.POJO, commonPackage + "." + pojoPackage);
 		}
@@ -98,11 +99,11 @@ public class Generator {
 		DBTableInfo dbTableInfo = new MysqlDBTableInfo(configuration.getParam());
 		Set<Table> tables = dbTableInfo.getTables(configuration.getDbName());
 		if (configuration.isGeneratorPojo()) {
-			generatorFile(tables,Constant.POJO);
-		    generatorPojoKeyFile(tables,Constant.POJO_KEY);
+			generatorFile(tables, Constant.POJO);
+		    generatorPojoKeyFile(tables, Constant.POJO_KEY);
 		}
 		if (configuration.isGeneratorQuery()) {
-			generatorFile(tables,Constant.QUERY);
+			generatorFile(tables, Constant.QUERY);
 			generatorBaseQueryFile();
 		}
 		if (configuration.isGeneratorMapperXml()) {
@@ -251,14 +252,15 @@ public class Generator {
 		String moduleName = getModuleName(table.getTableName());
 		String className = getClassName(table.getTableName());
 		
+		Map<Integer, String> defaultPackageMap = Constant.DEFAULT_PACKAGE_MAP;
 		if(Constant.JS == templateKey || Constant.JSP == templateKey){
 			className = StringUtil.toLowerCaseFirstOne(className);
 			root.put("dir", Constant.DEFAULT_DIR_MAP.get(templateKey));
 		} else {
-			String fPackage =  Constant.DEFAULT_PACKAGE_MAP.get(templateKey) + "." + moduleName;
+			String fPackage =  defaultPackageMap.get(templateKey) + "." + moduleName;
 			root.put("dir",new String(fPackage).replace(".", File.separator));
 			if(Constant.MAPPER.equals(templateKey)){
-				fPackage = Constant.DEFAULT_PACKAGE_MAP.get(Constant.DAO_INTER) + "." + moduleName;
+				fPackage = defaultPackageMap.get(Constant.DAO_INTER) + "." + moduleName;
 			}
 		}
 		root.put("className", className);
@@ -267,14 +269,15 @@ public class Generator {
 		root.put("daoSuffix", configuration.getDaoSuffix());
 		root.put("module", moduleName);
 		
-		root.put("pojo_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.POJO) + "." + moduleName);
-		root.put("dao_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.DAO_INTER) + "." + moduleName);
-		root.put("dao_impl_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.DAO_IMPL) + "." + moduleName);
-		root.put("service_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.SERVICE_INTER) + "." + moduleName);
-		root.put("service_impl_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.SERVICE_IMPL) + "." + moduleName);
-		root.put("controller_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.CONTROLLER) + "." + moduleName);
-		root.put("query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.QUERY) + "." + moduleName);
-		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
+		root.put("common_package", Constant.DEFAULT_BASE_PACKAGE);
+		root.put("pojo_package", defaultPackageMap.get(Constant.POJO) + "." + moduleName);
+		root.put("dao_package", defaultPackageMap.get(Constant.DAO_INTER) + "." + moduleName);
+		root.put("dao_impl_package", defaultPackageMap.get(Constant.DAO_IMPL) + "." + moduleName);
+		root.put("service_package", defaultPackageMap.get(Constant.SERVICE_INTER) + "." + moduleName);
+		root.put("service_impl_package", defaultPackageMap.get(Constant.SERVICE_IMPL) + "." + moduleName);
+		root.put("controller_package", defaultPackageMap.get(Constant.CONTROLLER) + "." + moduleName);
+		root.put("query_package", defaultPackageMap.get(Constant.QUERY) + "." + moduleName);
+		root.put("base_query_package", defaultPackageMap.get(Constant.BASE_QUERY));
 		
 		return root;
 	}

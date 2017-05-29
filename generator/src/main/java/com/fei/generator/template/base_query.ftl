@@ -192,7 +192,7 @@ public class BaseQuery {
 
 	private static final String ESCAPE_CHARACTER = "/";
 	/** 拼接到LIKE语句后 */
-	protected static final String LIKE_AFTER_ESCAPE = " EACAPE '" + ESCAPE_CHARACTER + "'";
+	protected static final String LIKE_AFTER_ESCAPE = " ESCAPE '" + ESCAPE_CHARACTER + "'";
 	/** 百分号 */
 	protected static final String PERCENT_SIGN = "%";
 	/** 转义符+百分号 */

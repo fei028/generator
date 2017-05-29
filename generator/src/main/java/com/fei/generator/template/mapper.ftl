@@ -245,7 +245,7 @@
      (
      <#list table.primaryKeyFields as field>
 	     <#if field.dataType == 'String'>
-	     ${'#'}{item.${field.propertyName?uncap_first}},
+	     replace(uuid(),'-',''),
 	     <#else>
 	     <if test="${field.propertyName?uncap_first} != null">
 	     ${'#'}{item.${field.propertyName?uncap_first}},

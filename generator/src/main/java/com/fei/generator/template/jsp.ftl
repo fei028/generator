@@ -14,8 +14,8 @@
 	  <div class="form-inline" role="form" id="searchForm">
 	  	<#list table.fields as field>
 		<div class="form-group username-div">
-		  <label for="username">${field.columnComment }</label>
-		  <input type="text" class="form-control" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }"/>
+		  <label for="s-${field.propertyName?uncap_first}">${field.columnComment }</label>
+		  <input type="text" class="form-control" id="s-${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }"/>
 		</div>
 		</#list>
 		<#list table.fields as field>
@@ -58,7 +58,7 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label">${field.columnComment }</label>
 						<div class="col-sm-8">
-      						<input type="email" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}"">
+      						<input type="email" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}">
     					</div>
 					</div>
 					</#list>

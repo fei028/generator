@@ -17,7 +17,7 @@ public abstract class Constant {
 	/**
 	 * 默认基础包
 	 */
-	public static final String DEFAULT_BASE_PACKAGE = "generator";
+	public static String DEFAULT_BASE_PACKAGE = "com.default.package";
 	/* 文件标志 */
 	public static final int POJO = 0;
 	public static final int POJO_KEY = 1;
