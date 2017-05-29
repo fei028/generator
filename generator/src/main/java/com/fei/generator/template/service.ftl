@@ -30,7 +30,7 @@ public interface ${className}Service {
 	
 	public ${table.primaryKeyFields[0].dataType} add${className}(${className} ${className?uncap_first});
 
-	public String batchInsert(List<${className}> ${className?uncap_first}s);
+	public void batchInsert(List<${className}> ${className?uncap_first}s);
 	
 	<#if table.primaryKeyFields?size = 1>
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s);

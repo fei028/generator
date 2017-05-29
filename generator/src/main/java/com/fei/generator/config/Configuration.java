@@ -1,5 +1,11 @@
 package com.fei.generator.config;
 
+import java.io.File;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fei.generator.model.ConnectionParam;
 import com.fei.generator.util.Constant;
 /**
@@ -9,6 +15,8 @@ import com.fei.generator.util.Constant;
  */
 public class Configuration {
 	
+	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+	
 	/** 作者[创建人] */
 	private String author = "XuPengFei";
 	/** 数据库连接配置 **/
@@ -17,17 +25,21 @@ public class Configuration {
 	private String username = "root";
 	private String password = "1234";
 	/** 包结构配置 **/
-	private String pojoPackage;
-	private String daoPackage;
-	private String daoImplPackage;
-	private String servicePackage;
-	private String serviceImplPackage;
-	private String controllerPackage;
-	private String mapperPackage;
-	private String queryPackage;
-	private String baseQueryPackage;
-	private String jsPackage;
-	private String jspPackage;
+	private String commonPackage;// 公共包
+	private String pojoPackage = "pojo";
+	private String daoPackage = "dao";
+	private String daoImplPackage = "dao";
+	private String servicePackage = "service";
+	private String serviceImplPackage = "service";
+	private String controllerPackage = "controller";
+	private String mapperPackage = "mapper";
+	private String queryPackage = "query";
+	private String baseQueryPackage = "query";
+	private String jsPackage = "js";
+	private String jspPackage = "jsp";
+	/** js 公共文件夹 */  
+	private String jsCommonDir = "static" + File.separator + "js" + File.separator + "pages";
+	private String jspCommonDir = "WEB-INF" + File.separator + "pages";
 	/** 模块名称 默认取包名称最后一个文件夹名称 */
 	private String module;
 	/** 生成文件 默认生成 **/
@@ -43,10 +55,14 @@ public class Configuration {
 	private boolean isGeneratorJsp = true;
 	/** Dao层java文件后缀名称 */
 	private String daoSuffix = "Dao";
-	/** 表名前缀 */
-	private String tablePrefix;
+	/** 表名前缀规则 */
+	private int tablePrefixRule = 1;
 	/** 是否忽视表名前缀 默认不忽略 */
 	private boolean tablePrefixIgnore = false;
+	/** 忽略的表名前缀 表名中如果有其中的前缀 将忽略该张表 */
+	private String[] includedTablePrefix;
+	/** 忽略的表名前缀 表名中如果有其中的前缀 将忽略该张表 */
+	private String[] excludedTablePrefix;
 	/** 表名中单词间的分隔符 默认'_'*/
 	private String separator = "_";
 	/** 数据库名称 */
@@ -131,39 +147,48 @@ public class Configuration {
 	}
 
 	public void setPojoPackage(String pojoPackage) {
-		this.pojoPackage = pojoPackage;
+		this.pojoPackage = pojoPackage != null ? pojoPackage.trim() : this.pojoPackage;
+		logger.debug("设置pojoPackage:{}", pojoPackage);
 	}
 
 	public void setDaoPackage(String daoPackage) {
-		this.daoPackage = daoPackage;
+		this.daoPackage = daoPackage != null ? daoPackage.trim() : this.daoPackage;
+		logger.debug("设置daoPackage:{}", daoPackage);
 	}
 
 	public void setDaoImplPackage(String daoImplPackage) {
-		this.daoImplPackage = daoImplPackage;
+		this.daoImplPackage = daoImplPackage != null ? daoImplPackage.trim() : this.daoImplPackage;
+		logger.debug("设置daoImplPackage:{}", daoImplPackage);
 	}
 
 	public void setServicePackage(String servicePackage) {
-		this.servicePackage = servicePackage;
+		this.servicePackage = servicePackage != null ? servicePackage.trim() : this.servicePackage;
+		logger.debug("设置servicePackage:{}", servicePackage);
 	}
 
 	public void setServiceImplPackage(String serviceImplPackage) {
-		this.serviceImplPackage = serviceImplPackage;
+		this.serviceImplPackage = serviceImplPackage != null ? serviceImplPackage.trim() : this.serviceImplPackage;
+		logger.debug("设置serviceImplPackage:{}", serviceImplPackage);
 	}
 
 	public void setControllerPackage(String controllerPackage) {
-		this.controllerPackage = controllerPackage;
+		this.controllerPackage = controllerPackage != null ? controllerPackage.trim() : this.controllerPackage;
+		logger.debug("设置controllerPackage:{}", controllerPackage);
 	}
 
 	public void setMapperPackage(String mapperPackage) {
 		this.mapperPackage = mapperPackage;
+		logger.debug("设置mapperPackage:{}", mapperPackage);
 	}
 
 	public void setQueryPackage(String queryPackage) {
 		this.queryPackage = queryPackage;
+		logger.debug("设置queryPackage:{}", queryPackage);
 	}
 
 	public void setBaseQueryPackage(String baseQueryPackage) {
 		this.baseQueryPackage = baseQueryPackage;
+		logger.debug("设置baseQueryPackage:{}", baseQueryPackage);
 	}
 
 	public boolean isGeneratorPojo() {
@@ -204,34 +229,42 @@ public class Configuration {
 
 	public void setGeneratorPojo(boolean isGeneratorPojo) {
 		this.isGeneratorPojo = isGeneratorPojo;
+		logger.debug("设置是否生成pojo文件:{}", isGeneratorPojo ? "生成" : "不生成");
 	}
 
 	public void setGeneratorQuery(boolean isGeneratorQuery) {
 		this.isGeneratorQuery = isGeneratorQuery;
+		logger.debug("设置是否生成query文件:{}", isGeneratorQuery ? "生成" : "不生成");
 	}
 
 	public void setGeneratorMapperXml(boolean isGeneratorMapperXml) {
 		this.isGeneratorMapperXml = isGeneratorMapperXml;
+		logger.debug("设置是否生成mapper文件:{}", isGeneratorMapperXml ? "生成" : "不生成");
 	}
 
 	public void setGeneratorDao(boolean isGeneratorDao) {
 		this.isGeneratorDao = isGeneratorDao;
+		logger.debug("设置是否生成dao文件:{}", isGeneratorDao ? "生成" : "不生成");
 	}
 
 	public void setGeneratorDaoImpl(boolean isGeneratorDaoImpl) {
 		this.isGeneratorDaoImpl = isGeneratorDaoImpl;
+		logger.debug("设置是否生成daoImpl文件:{}", isGeneratorDaoImpl ? "生成" : "不生成");
 	}
 
 	public void setGeneratorService(boolean isGeneratorService) {
 		this.isGeneratorService = isGeneratorService;
+		logger.debug("设置是否生成service文件:{}", isGeneratorService ? "生成" : "不生成");
 	}
 
 	public void setGeneratorServiceImpl(boolean isGeneratorServiceImpl) {
 		this.isGeneratorServiceImpl = isGeneratorServiceImpl;
+		logger.debug("设置是否生成serviceImpl文件:{}", isGeneratorServiceImpl ? "生成" : "不生成");
 	}
 
 	public void setGeneratorController(boolean isGeneratorController) {
 		this.isGeneratorController = isGeneratorController;
+		logger.debug("设置是否生成controller文件:{}", isGeneratorController ? "生成" : "不生成");
 	}
 
 	public void setDbName(String dbName) {
@@ -259,15 +292,10 @@ public class Configuration {
 		if(daoSuffix != null){
 			Constant.FILE_TYPE_NAME_MAP.put(Constant.DAO_INTER, this.daoSuffix);
 		}
+		
+		logger.debug("设置dao文件后缀:{}", daoSuffix);
 	}
 
-	public String getTablePrefix() {
-		return tablePrefix;
-	}
-
-	public void setTablePrefix(String tablePrefix) {
-		this.tablePrefix = tablePrefix != null ? tablePrefix.trim() : null;
-	}
 
 	public boolean isTablePrefixIgnore() {
 		return tablePrefixIgnore;
@@ -275,6 +303,7 @@ public class Configuration {
 
 	public void setTablePrefixIgnore(boolean tablePrefixIgnore) {
 		this.tablePrefixIgnore = tablePrefixIgnore;
+		logger.debug("设置是否忽略表名称前缀:{}", tablePrefixIgnore ? "忽略" : "不忽略");
 	}
 
 	public String getSeparator() {
@@ -283,6 +312,7 @@ public class Configuration {
 
 	public void setSeparator(String separator) {
 		this.separator = separator != null ? separator.trim() : "";
+		logger.debug("设置表名称单词之间的分隔符:{}", separator);
 	}
 
 	public boolean isGeneratorJs() {
@@ -291,6 +321,7 @@ public class Configuration {
 
 	public void setGeneratorJs(boolean isGeneratorJs) {
 		this.isGeneratorJs = isGeneratorJs;
+		logger.debug("设置是否生成js文件:{}", isGeneratorJs ? "生成" : "不生成");
 	}
 
 	public boolean isGeneratorJsp() {
@@ -299,6 +330,7 @@ public class Configuration {
 
 	public void setGeneratorJsp(boolean isGeneratorJsp) {
 		this.isGeneratorJsp = isGeneratorJsp;
+		logger.debug("设置是否生成jsp文件:{}", isGeneratorJsp ? "生成" : "不生成");
 	}
 
 	public String getJsPackage() {
@@ -306,7 +338,8 @@ public class Configuration {
 	}
 
 	public void setJsPackage(String jsPackage) {
-		this.jsPackage = jsPackage;
+		this.jsPackage = jsPackage != null ? jsPackage.trim() : this.jsPackage;
+		logger.debug("设置jsPackage:{}", jsPackage);
 	}
 
 	public String getJspPackage() {
@@ -314,7 +347,8 @@ public class Configuration {
 	}
 
 	public void setJspPackage(String jspPackage) {
-		this.jspPackage = jspPackage;
+		this.jspPackage = jspPackage != null ? jspPackage.trim() : this.jspPackage;
+		logger.debug("设置jspPackage:{}", jspPackage);
 	}
 
 	public String getModule() {
@@ -327,6 +361,62 @@ public class Configuration {
 
 	public void setModule(String module) {
 		this.module = module != null ? module.trim() : null;
+		logger.debug("设置module:{}", module);
+	}
+
+	public String getCommonPackage() {
+		return commonPackage;
+	}
+
+	public void setCommonPackage(String commonPackage) {
+		this.commonPackage = commonPackage != null ? commonPackage.trim() : this.commonPackage;
+		logger.debug("设置commonPackage:{}", commonPackage);
+	}
+
+	public String[] getExcludedTablePrefix() {
+		return excludedTablePrefix;
+	}
+
+	public void setExcludedTablePrefix(String[] excludedTablePrefix) {
+		this.excludedTablePrefix = excludedTablePrefix;
+		if(excludedTablePrefix != null && excludedTablePrefix.length > 0){
+			for (String tablePrefixName : excludedTablePrefix) {
+				Constant.EXCLUDED_TABLEPREFIX_MAP.put(tablePrefixName.trim(), tablePrefixName);
+			}
+		}
+		logger.debug("设置excludedTablePrefix:{}", excludedTablePrefix);
+	}
+
+	public int getTablePrefixRule() {
+		return tablePrefixRule;
+	}
+
+	public void setTablePrefixRule(int tablePrefixRule) {
+		this.tablePrefixRule = tablePrefixRule;
+	}
+
+	public String[] getIncludedTablePrefix() {
+		return includedTablePrefix;
+	}
+
+	public void setIncludedTablePrefix(String[] includedTablePrefix) {
+		this.includedTablePrefix = includedTablePrefix;
+	}
+
+	public String getJsCommonDir() {
+		return jsCommonDir;
+	}
+
+	public void setJsCommonDir(String jsCommonDir) {
+		this.jsCommonDir = jsCommonDir != null ? jsCommonDir.trim() : this.jsCommonDir;
+	}
+
+	public String getJspCommonDir() {
+		return jspCommonDir;
+	}
+
+	public void setJspCommonDir(String jspCommonDir) {
+		this.jspCommonDir = jspCommonDir != null ? jspCommonDir.trim() : this.jspCommonDir;
 	}
 
 }

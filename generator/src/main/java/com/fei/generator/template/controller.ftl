@@ -31,7 +31,7 @@ import ${query_package}.${className}Query;
  *
  */
 @Controller
-@RequestMapping(value = "/${className?uncap_first}")
+@RequestMapping(value = "/${module}/${className?uncap_first}")
 public class ${className}Controller {
 	
 	@Autowired
@@ -39,9 +39,10 @@ public class ${className}Controller {
 
 	
 	@RequestMapping(value = "/${className?uncap_first}")
+	@NavPath
 	public String index(Model model){
 		
-		return "${className?uncap_first}";
+		return "${module}/${className?uncap_first}/${className?uncap_first}";
 	}
 	
     /**

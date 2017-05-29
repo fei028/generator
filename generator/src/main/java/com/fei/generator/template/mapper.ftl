@@ -55,7 +55,7 @@
                 AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
             </if>
             <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
-                AND ${field.columnName}Like LIKE ${'#'}{${field.propertyName?uncap_first}Like}
+                AND ${field.columnName} LIKE ${'#'}{${field.propertyName?uncap_first}Like}
             </if>
             <#else>
             AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
@@ -204,7 +204,7 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <#list table.primaryKeyFields as field>
       <#if field.dataType == 'String'>
-      	${'#'}{${field.propertyName?uncap_first}},
+      	replace(uuid(),'-',''),
       <#else>
       <if test="${field.propertyName?uncap_first} != null" >
         ${'#'}{${field.propertyName?uncap_first}},

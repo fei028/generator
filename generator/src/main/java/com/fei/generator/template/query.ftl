@@ -58,7 +58,7 @@ public class ${className}Query extends BaseQuery{
 		if(this.${field.propertyName?uncap_first} != null && likeType != null && likeType != SqlLike.NO_LIKE){
 			String ${field.propertyName?uncap_first}AfterEscape = sqlLikeWildcardEscape(${field.propertyName?uncap_first});
 			if (likeType == SqlLike.ALL){
-				this.${field.propertyName?uncap_first}Like = LikePERCENT_SIGN + ${field.propertyName?uncap_first}AfterEscape + PERCENT_SIGN + LIKE_AFTER_ESCAPE;
+				this.${field.propertyName?uncap_first}Like = PERCENT_SIGN + ${field.propertyName?uncap_first}AfterEscape + PERCENT_SIGN + LIKE_AFTER_ESCAPE;
 			} else if(likeType == SqlLike.LEFT_LIKE){
     			this.${field.propertyName?uncap_first}Like = PERCENT_SIGN + ${field.propertyName?uncap_first}AfterEscape + LIKE_AFTER_ESCAPE;
 			} else if(likeType == SqlLike.RIGHT_LIKE){

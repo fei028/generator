@@ -140,5 +140,13 @@ public abstract class Constant {
 		}
 	};
 	
+	@SuppressWarnings("serial")
+	public static final Map<Integer,String> DEFAULT_DIR_MAP = new HashMap<Integer, String>(){
+		{
+			put(Constant.JS, "static" + File.separator + "js" + File.separator + "pages");
+			put(Constant.JSP, "WEB-INF" + File.separator + "pages");
+		}
+	};
+	public static final Map<String,String> EXCLUDED_TABLEPREFIX_MAP = new HashMap<>();
 
 }
