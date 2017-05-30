@@ -94,7 +94,7 @@ public class ${className}Controller {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	public String update(${className} ${className?uncap_first},HttpServletRequest request) throws CustomException {
-		return saveOrUpdate(${className?uncap_first}, request);
+		return saveOrUpdate(${className?uncap_first}, "update", request);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class ${className}Controller {
 	@RequestMapping(value = "/add",method = RequestMethod.POST)
 	@ResponseBody
 	public String add${className}(${className}  ${className?uncap_first},HttpServletRequest request) throws CustomException {
-		return saveOrUpdate(${className?uncap_first}, request);
+		return saveOrUpdate(${className?uncap_first}, "add", request);
 	}
 	<#if table.primaryKeyFields?size = 1>
 	/**
@@ -126,9 +126,7 @@ public class ${className}Controller {
 
 	@RequestMapping(value = "/search")
 	@ResponseBody
-	public Map<String,Object> search(HttpServletRequest request) {
-		
-		${className}Query ${className?uncap_first}Query = new ${className}Query();
+	public Map<String,Object> search(${className}Query ${className?uncap_first}Query, HttpServletRequest request) {
 		
 		//${className?uncap_first}Query.setFields(fields);
 		
@@ -162,7 +160,7 @@ public class ${className}Controller {
 		return Result.error();
 	}
 	
-	private String saveOrUpdate(${className?cap_first} ${className?uncap_first}, HttpServletRequest request) throws CustomException {
+	private String saveOrUpdate(${className?cap_first} ${className?uncap_first}, String tag, HttpServletRequest request) throws CustomException {
 		
 		//判断用户名是否已经存在
 		/*
@@ -176,21 +174,21 @@ public class ${className}Controller {
 		
 		String logContent = null;
 		
-		if(${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() == null){// 新增用户
+		if("add".equals(tag)){// 新增用户
 			
 			// 添加时间
-			//Date date = new Date();
-			//${className?uncap_first}.setCreateTime(date);
-			//${className?uncap_first}.setCreateUser(activeUser.getUserId());
+			Date date = new Date();
+			${className?uncap_first}.setCreateTime(date);
+			${className?uncap_first}.setCreateUser(activeUser.getUserId());
 			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add${className?cap_first}(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "创建了id[" + ${table.primaryKeyFields[0].propertyName?uncap_first} +"] ";
 			
 		} else {
 			// 更新时间
-			//Date date = new Date();
-			//${className?uncap_first}.setUpdateTime(date);
-			//${className?uncap_first}.setUpdateUser(activeUser.getUserId());
+			Date date = new Date();
+			${className?uncap_first}.setUpdateTime(date);
+			${className?uncap_first}.setUpdateUser(activeUser.getUserId());
 			${className?uncap_first}Service.update(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "修改了id[" + ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}() + "] ";
