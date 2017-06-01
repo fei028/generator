@@ -1,11 +1,14 @@
 package com.fei.generator.config;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fei.generator.exception.FormatStringErrorException;
+import com.fei.generator.exception.MapKeyAlreadyExistException;
 import com.fei.generator.model.ConnectionParam;
 import com.fei.generator.util.Constant;
 /**
@@ -35,13 +38,11 @@ public class Configuration {
 	private String mapperPackage = "mapper";
 	private String queryPackage = "query";
 	private String baseQueryPackage = "query";
-	private String jsPackage = "js";
-	private String jspPackage = "jsp";
 	/** js 公共文件夹 */  
 	private String jsCommonDir = "static" + File.separator + "js" + File.separator + "pages";
 	private String jspCommonDir = "WEB-INF" + File.separator + "pages";
-	/** 模块名称 默认取包名称最后一个文件夹名称 */
-	private String module;
+	/** 模块名称替换map key:旧模块名称 value:替换成的新模块名称 */
+	private Map<String,String> moduleReplaceMap;
 	/** 生成文件 默认生成 **/
 	private boolean isGeneratorPojo = true;
 	private boolean isGeneratorQuery = true;
@@ -333,37 +334,6 @@ public class Configuration {
 		logger.debug("设置是否生成jsp文件:{}", isGeneratorJsp ? "生成" : "不生成");
 	}
 
-	public String getJsPackage() {
-		return jsPackage;
-	}
-
-	public void setJsPackage(String jsPackage) {
-		this.jsPackage = jsPackage != null ? jsPackage.trim() : this.jsPackage;
-		logger.debug("设置jsPackage:{}", jsPackage);
-	}
-
-	public String getJspPackage() {
-		return jspPackage;
-	}
-
-	public void setJspPackage(String jspPackage) {
-		this.jspPackage = jspPackage != null ? jspPackage.trim() : this.jspPackage;
-		logger.debug("设置jspPackage:{}", jspPackage);
-	}
-
-	public String getModule() {
-		if(module == null){
-			String[] pacArr = pojoPackage.split("\\.");
-			module = pacArr[pacArr.length - 1];
-		}
-		return module;
-	}
-
-	public void setModule(String module) {
-		this.module = module != null ? module.trim() : null;
-		logger.debug("设置module:{}", module);
-	}
-
 	public String getCommonPackage() {
 		return commonPackage;
 	}
@@ -419,4 +389,45 @@ public class Configuration {
 		this.jspCommonDir = jspCommonDir != null ? jspCommonDir.trim() : this.jspCommonDir;
 	}
 
+	public Map<String, String> getModuleReplaceMap() {
+		return moduleReplaceMap;
+	}
+
+	public void setModuleReplaceMap(Map<String, String> moduleReplaceMap) {
+		this.moduleReplaceMap = moduleReplaceMap;
+	}
+	/**
+	 * 输入指定格式的字符串 用于模块名称的更改
+	 * @param moduleReplaceStr 格式 [旧模块名称,新模块名称],[旧模块名称,新模块名称],[旧模块名称,新模块名称],  注意新旧模块名称不能已数字开头
+	 */
+	public void setModuleReplaceStr(String moduleReplaceStr){//[旧模块名称,新模块名称],[旧模块名称,新模块名称],[旧模块名称,新模块名称],
+		moduleReplaceStr = moduleReplaceStr == null ? null : moduleReplaceStr.trim();
+		if(moduleReplaceStr != null && moduleReplaceStr != ""){
+			String _moduleReplaceStr = null;
+			if(!(moduleReplaceStr.charAt(moduleReplaceStr.length() - 1) == ',')){
+				_moduleReplaceStr = moduleReplaceStr + ",";
+			} else {
+				_moduleReplaceStr = moduleReplaceStr;
+			}
+			String regex = "^(\\[[a-zA-Z]+[0-9]*,[a-zA-Z]+[0-9]*\\],)+$";
+			if(!_moduleReplaceStr.matches(regex)){
+				throw new FormatStringErrorException(moduleReplaceStr + "格式错误,示例正确格式 ==> [旧模块名称,新模块名称],[旧模块名称,新模块名称],[旧模块名称,新模块名称]  注意新旧模块名称不能已数字开头");
+			}
+			
+			String[] moduleReplaceStrArr = _moduleReplaceStr.split("],");
+			
+			if(moduleReplaceStrArr != null && moduleReplaceStrArr.length > 0){
+				moduleReplaceMap = new HashMap<>();
+				for (String str : moduleReplaceStrArr) {
+					String[] moduleArr = str.substring(1, str.length()).split(",");
+					if(moduleReplaceMap.get(moduleArr[0]) == null){
+						moduleReplaceMap.put(moduleArr[0], moduleArr[1]);
+					} else {
+						throw new MapKeyAlreadyExistException("根据moduleReplaceStr转化成map时,存在相同的key,检查moduleReplaceStr中多个[旧模块名称,新模块名称]之间是否存在多个相同的旧模块名称,请更正");
+					}
+				}
+			}
+		}
+	}
+	
 }

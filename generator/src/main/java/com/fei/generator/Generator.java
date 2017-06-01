@@ -77,14 +77,14 @@ public class Generator {
 			Constant.DEFAULT_PACKAGE_MAP.put(Constant.BASE_QUERY, commonPackage + "." + baseQueryPackage);
 		}
 		
-		String jsPackage = configuration.getJsPackage();
-		if(jsPackage != null){
-			Constant.DEFAULT_PACKAGE_MAP.put(Constant.JS, commonPackage + "." + jsPackage);
+		String jsCommonDir = configuration.getJsCommonDir();
+		if(jsCommonDir != null){
+			Constant.DEFAULT_DIR_MAP.put(Constant.JS, jsCommonDir);
 		}
 		
-		String jspPackage = configuration.getJspPackage();
-		if(jspPackage != null){
-			Constant.DEFAULT_PACKAGE_MAP.put(Constant.JSP, commonPackage + "." + jspPackage);
+		String jspCommonDir = configuration.getJspCommonDir();
+		if(jspCommonDir != null){
+			Constant.DEFAULT_DIR_MAP.put(Constant.JSP, jspCommonDir);
 		}
 	}
 	
@@ -104,32 +104,34 @@ public class Generator {
 		}
 		if (configuration.isGeneratorQuery()) {
 			generatorFile(tables, Constant.QUERY);
-			generatorBaseQueryFile();
 		}
 		if (configuration.isGeneratorMapperXml()) {
-			generatorFile(tables,Constant.MAPPER);
+			generatorFile(tables, Constant.MAPPER);
 		}
 		if (configuration.isGeneratorDao()) {
-			generatorFile(tables,Constant.DAO_INTER);
+			generatorFile(tables, Constant.DAO_INTER);
 		}
 		if (configuration.isGeneratorDaoImpl()) {
-			generatorFile(tables,Constant.DAO_IMPL);
+			generatorFile(tables, Constant.DAO_IMPL);
 		}
 		if(configuration.isGeneratorService()){
-			generatorFile(tables,Constant.SERVICE_INTER);
+			generatorFile(tables, Constant.SERVICE_INTER);
 		}
 		if(configuration.isGeneratorServiceImpl()){
-			generatorFile(tables,Constant.SERVICE_IMPL);
+			generatorFile(tables, Constant.SERVICE_IMPL);
 		}
 		if(configuration.isGeneratorController()){
-			generatorFile(tables,Constant.CONTROLLER);
+			generatorFile(tables, Constant.CONTROLLER);
 		}
 		if(configuration.isGeneratorJs()){
-			generatorFile(tables,Constant.JS);
+			generatorFile(tables, Constant.JS);
 		}
 		if(configuration.isGeneratorJsp()){
-			generatorFile(tables,Constant.JSP);
+			generatorFile(tables, Constant.JSP);
 		}
+		
+		generatorBaseQueryFile();
+		generatorSqlLikeFile();
 	}
 
 	private void generatorPojoKeyFile(Set<Table> tables, int pojoKey) throws IOException, TemplateException {
@@ -162,6 +164,17 @@ public class Generator {
 		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_QUERY), f, root);
 	}
 
+	private void generatorSqlLikeFile() throws IOException, TemplateException {
+		Map<String, Object> root = new HashMap<String, Object>();
+		root.put("author", configuration.getAuthor());
+		root.put("key", Constant.SQLLIKE_ENUM);
+		root.put("className", "SqlLike");
+		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
+		root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY)).replace(".", File.separator));
+		File f = createFile(root);
+		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.SQLLIKE_ENUM), f, root);
+	}
+	
 	private void generatorFile(Set<Table> tables, int templateKey) throws IOException, TemplateException {
 		if(tables != null && tables.size() > 0){
 			
@@ -250,6 +263,12 @@ public class Generator {
 		root.put("author", configuration.getAuthor());
 		// 获取模块名称，即默认表名称前缀
 		String moduleName = getModuleName(table.getTableName());
+		// 检查模块名称是否需要替换
+		Map<String, String> moduleReplaceMap = configuration.getModuleReplaceMap();
+		if(moduleReplaceMap.get(moduleName) != null){
+			moduleName = moduleReplaceMap.get(moduleName);
+		}
+		
 		String className = getClassName(table.getTableName());
 		
 		Map<Integer, String> defaultPackageMap = Constant.DEFAULT_PACKAGE_MAP;
@@ -297,7 +316,7 @@ public class Generator {
 			throw new RuntimeException("分割后数组元素个数:" + split.length + ",您配置忽略前" + arrStartIndex + "个数组元素");
 		}
 		StringBuilder sb = new StringBuilder("");
-		sb.append(StringUtil.toUpperCaseFirstOne(split[arrStartIndex - 1].toString()));
+		sb.append(StringUtil.toUpperCaseFirstOne(split[arrStartIndex].toString()));
 		for (int i = 1; i < arrStartIndex; i++) {
 			sb.append(StringUtil.toUpperCaseFirstOne(split[i].toString()));
 		}

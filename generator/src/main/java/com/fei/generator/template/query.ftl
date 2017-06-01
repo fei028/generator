@@ -1,7 +1,7 @@
 <#-- 查询对象 模版文件 -->
 package ${query_package};
 
-import ${common_package}.common.enumeration.SqlLike;
+import ${base_query_package}.SqlLike;
 
 import ${base_query_package}.BaseQuery;
 import java.util.Date;

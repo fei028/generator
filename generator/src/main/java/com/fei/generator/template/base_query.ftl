@@ -176,17 +176,7 @@ public class BaseQuery {
 		if(keys != null && !keys.isEmpty()){
 			Set<?> keySet = new HashSet<>(keys);
 			keys = new ArrayList<>(keySet);
-			if(keys.get(0).getClass().getName().equals(String.class.getName())){
-				List<String> list = new ArrayList<>();
-				String key = null;
-				for (int i = 0; i < keys.size(); i++) {
-					key = "'" + keys.get(i) + "'";// 'string'
-					list.add(key);
-				}
-				this.keys = list;
-			}else{
-				this.keys = keys;
-			}
+			this.keys = keys;
 		}
 	}
 

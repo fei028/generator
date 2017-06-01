@@ -55,7 +55,7 @@
                 AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
             </if>
             <if test="${field.propertyName?uncap_first}Like != null and ${field.propertyName?uncap_first}Like != ''">
-                AND ${field.columnName} LIKE ${'#'}{${field.propertyName?uncap_first}Like}
+                AND ${field.columnName} LIKE ${'#'}{${field.propertyName?uncap_first}Like} ESCAPE '/'
             </if>
             <#else>
             AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}

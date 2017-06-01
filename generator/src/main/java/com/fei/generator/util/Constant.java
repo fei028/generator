@@ -35,8 +35,10 @@ public abstract class Constant {
 	public static final Integer QUERY = 8;
 	public static final Integer BASE_QUERY = 9;
 	
-	public static final Integer JS = 19;
+	public static final Integer JS = 10;
 	public static final Integer JSP = 11;
+	
+	public static final Integer SQLLIKE_ENUM = 12;
 	/* end */
 	/**
 	 * 模版文件名称map<文件标志,文件名称>
@@ -56,6 +58,7 @@ public abstract class Constant {
 			put(Constant.BASE_QUERY, "base_query.ftl");
 			put(Constant.JS, "js.ftl");
 			put(Constant.JSP, "jsp.ftl");
+			put(Constant.SQLLIKE_ENUM, "sqlLike.ftl");
 		}
 	};
 	
@@ -104,6 +107,7 @@ public abstract class Constant {
 			put(Constant.BASE_QUERY, "Query");
 			put(Constant.JS, "");
 			put(Constant.JSP, "");
+			put(Constant.SQLLIKE_ENUM, "");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -121,6 +125,7 @@ public abstract class Constant {
 			put(Constant.BASE_QUERY, ".java");
 			put(Constant.JS, ".js");
 			put(Constant.JSP, ".jsp");
+			put(Constant.SQLLIKE_ENUM, ".java");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -148,5 +153,6 @@ public abstract class Constant {
 		}
 	};
 	public static final Map<String,String> EXCLUDED_TABLEPREFIX_MAP = new HashMap<>();
+	
 
 }
