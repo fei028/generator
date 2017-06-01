@@ -25,6 +25,8 @@ $(function(){
 		</#list>
 		],
 		keyField: '${table.primaryKeyFields[0].propertyName?uncap_first}',
+		modalAddTitle: '新增**',
+		modalEditTitle: '修改**信息',
 		searchFormEleNames: [
 		<#list table.fields as field>
 			'${field.propertyName?uncap_first}',
@@ -42,7 +44,22 @@ $(function(){
 				}
 				</#list>
 				return true;
-			}
+			},
+			// 新增或者修改时，需要在模态框中显示的数据，在此操作
+			otherDataDisplay: function(){
+			/*
+				$.ajax({  
+			        type: "POST",  
+			        url: '####url',
+			        data: '',  
+			        dataType:"json",
+			        async: false,
+			        success: function(result){
+			        	
+			        }, 
+			    });
+			    */
+			},
 		}
 	});
 });

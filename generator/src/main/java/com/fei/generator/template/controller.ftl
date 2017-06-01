@@ -12,7 +12,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.apache.shiro.subject.Subject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +49,8 @@ public class ${className}Controller {
 
 	
 	@RequestMapping(value = "/${className?uncap_first}")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}"})
+	@ParentPermission
 	@NavPath
 	public String index(Model model){
 		
@@ -59,6 +63,7 @@ public class ${className}Controller {
      * */
 	@RequestMapping(value = "/get${className}", method = RequestMethod.POST)
 	<#if table.primaryKeyFields?size = 1>
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-update"})
 	@ResponseBody
 	public ${className} get${className}(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
 		
@@ -73,6 +78,7 @@ public class ${className}Controller {
 	}
 	</#if>
 	<#if table.primaryKeyFields?size gt 1>
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-update"})
 	@ResponseBody
 	public ${className} get${className}(${className?cap_first}Key ${className?uncap_first}Key){
 		
@@ -92,6 +98,7 @@ public class ${className}Controller {
 	 * @param ${className?uncap_first} 
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-update"})
 	@ResponseBody
 	public String update(${className} ${className?uncap_first},HttpServletRequest request) throws CustomException {
 		return saveOrUpdate(${className?uncap_first}, "update", request);
@@ -103,8 +110,9 @@ public class ${className}Controller {
 	 * @return 
 	 */
 	@RequestMapping(value = "/add",method = RequestMethod.POST)
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-add"})
 	@ResponseBody
-	public String add${className}(${className}  ${className?uncap_first},HttpServletRequest request) throws CustomException {
+	public String add${className}(${className}  ${className?uncap_first}, HttpServletRequest request) throws CustomException {
 		return saveOrUpdate(${className?uncap_first}, "add", request);
 	}
 	<#if table.primaryKeyFields?size = 1>
@@ -113,8 +121,9 @@ public class ${className}Controller {
 	 * @param ${table.primaryKeyFields[0].propertyName?uncap_first}s
 	 */
 	@RequestMapping(value = "/deleteByKeys")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-delete"})
 	@ResponseBody
-	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]")List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
+	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
 			${className?uncap_first}Service.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		} else {
@@ -125,6 +134,7 @@ public class ${className}Controller {
 	</#if>
 
 	@RequestMapping(value = "/search")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-search"})
 	@ResponseBody
 	public Map<String,Object> search(${className}Query ${className?uncap_first}Query, HttpServletRequest request) {
 		
@@ -151,6 +161,7 @@ public class ${className}Controller {
 	}
 	
 	@RequestMapping(value = "checkUniqueness")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-add","${module}-${className?uncap_first}-update"}, logical = Logical.OR)
 	@ResponseBody
 	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
 		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});

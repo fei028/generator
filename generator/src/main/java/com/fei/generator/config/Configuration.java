@@ -59,7 +59,7 @@ public class Configuration {
 	private int tablePrefixRule = 1;
 	/** 是否忽视表名前缀 默认不忽略 */
 	private boolean tablePrefixIgnore = false;
-	/** 忽略的表名前缀 表名中如果有其中的前缀 将忽略该张表 */
+	/** 忽略的表名前缀 表名中如果没有其中的前缀 将忽略该张表 */
 	private String[] includedTablePrefix;
 	/** 忽略的表名前缀 表名中如果有其中的前缀 将忽略该张表 */
 	private String[] excludedTablePrefix;
