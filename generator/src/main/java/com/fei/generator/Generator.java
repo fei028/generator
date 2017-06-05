@@ -138,6 +138,7 @@ public class Generator {
 		for (Table table : tables) {
 			if(table.getPrimaryKeyFields().size() > 1){
 				Map<String, Object> root = new HashMap<String, Object>();
+				root.put("author", configuration.getAuthor());
 				root.put("table", table);
 				root.put("key", pojoKey);
 				String tableName = table.getTableName();
@@ -206,8 +207,12 @@ public class Generator {
 		// src/main/webapp/
 		String className = StringUtil.toLowerCaseFirstOne(root.get("className").toString());
 		// 目录不存在时创建
-		File file = new File("src" + File.separator + "main" + File.separator + "webapp");
+		File file = new File("src" + File.separator + "main" + File.separator + "java");
 		if(file.exists()){
+			file = new File("src" + File.separator + "main" + File.separator + "webapp");
+			if(!file.exists()){
+				file.mkdirs();
+			}
 			file = new File(file, (String) root.get("dir") + File.separator + root.get("module") + File.separator + className);	
 		}else{
 			file = new File("WebContent" + File.separator + root.get("dir") + File.separator + root.get("module") + File.separator + className);		

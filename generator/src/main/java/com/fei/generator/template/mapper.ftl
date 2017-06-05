@@ -220,20 +220,11 @@
   </insert>
   <!-- 批量插入 -->
   <insert id="batchInsert" parameterType="list">
-  	<#if table.primaryKeyFields[0].dataType == 'String'>
-    <selectKey keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}" order="BEFORE" resultType="string">
-  		SELECT replace(uuid(),'-','') FROM dual
-    </selectKey>
-    </#if>
     INSERT INTO ${table.tableName}
       <trim prefix="(" suffix=")" suffixOverrides="," >
           <#list table.primaryKeyFields as field>
           <#if field.dataType == 'String'>
           ${field.columnName},
-          <#else>
-          <if test="${field.propertyName?uncap_first} != null">
-          ${field.columnName},
-          </if>
 		  </#if>
           </#list>
           <#list table.fields as field>
@@ -246,10 +237,6 @@
      <#list table.primaryKeyFields as field>
 	     <#if field.dataType == 'String'>
 	     replace(uuid(),'-',''),
-	     <#else>
-	     <if test="${field.propertyName?uncap_first} != null">
-	     ${'#'}{item.${field.propertyName?uncap_first}},
-	     </if>
 		 </#if>
      </#list>
      <#list table.fields as field>

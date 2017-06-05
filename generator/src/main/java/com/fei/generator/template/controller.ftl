@@ -165,10 +165,7 @@ public class ${className}Controller {
 	@ResponseBody
 	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
 		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});
-		if(unique){
-			return Result.ok();
-		}
-		return Result.error();
+		return unique ? Result.ok() : Result.error();
 	}
 	
 	private String saveOrUpdate(${className?cap_first} ${className?uncap_first}, String tag, HttpServletRequest request) throws CustomException {

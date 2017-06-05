@@ -27,8 +27,8 @@ public class MysqlDBTableInfo implements DBTableInfo{
 	public Set<Table> getTables(String tableSchema, String... excludeTableNames) {
 		String getTableSql = 
 				  "SELECT DISTINCT TABLE_NAME "
-				+ "FROM information_schema.columns "
-				+ "WHERE table_schema='"+tableSchema+"'";
+				+ "FROM INFORMATION_SCHEMA.TABLES "
+				+ "WHERE table_type='BASE TABLE' AND table_schema='" + tableSchema + "'";
 		Set<Table> tableSet = null;
 		Connection conn = null;
 		try {

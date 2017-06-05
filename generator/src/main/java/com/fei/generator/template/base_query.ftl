@@ -177,6 +177,7 @@ public class BaseQuery {
 			Set<?> keySet = new HashSet<>(keys);
 			keys = new ArrayList<>(keySet);
 			this.keys = keys;
+			this.startRow = 0L;
 		}
 	}
 
