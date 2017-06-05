@@ -141,7 +141,7 @@ public class ${className}Controller {
 		//${className?uncap_first}Query.setFields(fields);
 		
 		//${className?uncap_first}Query.orderbyCreateTime(false);
-		
+		${className?uncap_first}Query.orderby${table.primaryKeyFields[0].propertyName?cap_first}(false);
 		/* 模糊查询  自己在query对象自己添加 * 代表属性
 		if(StringUtils.isNotBlank(*)){
 			${className?uncap_first}Query.set*(*);
