@@ -57,14 +57,14 @@ public class MysqlDBTableInfo implements DBTableInfo{
 		
 		if(excludeTableNames != null && excludeTableNames.length > 0){
 			// 去重 防止同一表名多个
-			set=new HashSet<String>(Arrays.asList(excludeTableNames));
+			set = new HashSet<String>(Arrays.asList(excludeTableNames));
 		}else{
-			set=new HashSet<String>();
+			set = new HashSet<String>();
 		}
 		
 		while(resultSet.next()){
 			String tableName = resultSet.getString("TABLE_NAME");
-			if(!set.contains(tableName)){
+			if(!isExcludeTableName(tableName, set)){
 				table = new Table();
 				table.setTableName(tableName);
 				// 获取字段集合
@@ -75,6 +75,23 @@ public class MysqlDBTableInfo implements DBTableInfo{
 		}
 		
 		return tableSet;
+	}
+	
+	/**
+	 * 判断是否是排除的表
+	 * @param tableName
+	 * @param set
+	 * @return
+	 */
+	private boolean isExcludeTableName(String tableName, Set<String> set) {
+		if(set != null && set.size() > 0){
+			for (String tablePrefix : set) {
+				if(tableName.startsWith(tablePrefix)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * 获取数据库中表中字段集合
