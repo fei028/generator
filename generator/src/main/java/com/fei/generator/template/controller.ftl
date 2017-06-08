@@ -24,14 +24,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
 
 import ${service_package}.${className}Service;
+<#if dependProjectCommonPackage == "">
 import ${common_package}.utils.LogUtils;
 import ${common_package}.utils.SearchUtils;
 import ${common_package}.web.Constant;
 import ${common_package}.web.annotation.NavPath;
+import ${common_package}.web.annotation.ParentPermission;
 import ${common_package}.web.exception.CustomException;
 import ${common_package}.common.page.SimplePage;
 import ${common_package}.common.pojo.Result;
 import ${common_package}.pojo.system.ActiveUser;
+<#else>
+import ${dependProjectCommonPackage}.utils.LogUtils;
+import ${dependProjectCommonPackage}.common.utils.SearchUtils;
+import ${dependProjectCommonPackage}.web.Constant;
+import ${dependProjectCommonPackage}.web.annotation.NavPath;
+import ${dependProjectCommonPackage}.web.annotation.ParentPermission;
+import ${dependProjectCommonPackage}.common.web.exception.CustomException;
+import ${dependProjectCommonPackage}.common.page.SimplePage;
+import ${dependProjectCommonPackage}.common.pojo.Result;
+import ${dependProjectCommonPackage}.pojo.system.ActiveUser;
+</#if>
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
 

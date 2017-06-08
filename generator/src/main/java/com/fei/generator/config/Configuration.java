@@ -27,6 +27,9 @@ public class Configuration {
 	private String url = "jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull";
 	private String username = "root";
 	private String password = "1234";
+	/** 生成的代码是否依赖于platform——common工程 */
+	private boolean dependPlatformCommon = false;
+	private String platformCommonPackage = "com.xlkh.platform.common";
 	/** 包结构配置 **/
 	private String commonPackage;// 公共包
 	private String pojoPackage = "pojo";
@@ -428,6 +431,22 @@ public class Configuration {
 				}
 			}
 		}
+	}
+
+	public boolean isDependPlatformCommon() {
+		return dependPlatformCommon;
+	}
+
+	public void setDependPlatformCommon(boolean dependPlatformCommon) {
+		this.dependPlatformCommon = dependPlatformCommon;
+	}
+
+	public String getPlatformCommonPackage() {
+		return platformCommonPackage;
+	}
+
+	public void setPlatformCommonPackage(String platformCommonPackage) {
+		this.platformCommonPackage = platformCommonPackage;
 	}
 	
 }

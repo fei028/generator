@@ -1,10 +1,15 @@
 <#-- 查询对象 模版文件 -->
 package ${query_package};
 
-import ${base_query_package}.SqlLike;
-
-import ${base_query_package}.BaseQuery;
 import java.util.Date;
+
+<#if dependProjectCommonPackage == "">
+import ${base_query_package}.BaseQuery;
+import ${base_query_package}.SqlLike;
+<#else>
+import ${dependProjectCommonPackage}.common.query.BaseQuery;
+import ${dependProjectCommonPackage}.common.query.SqlLike;
+</#if>
 /**
  * 
  * @author ${author}

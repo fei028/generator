@@ -97,7 +97,7 @@ public class Generator {
 	public void start() throws IOException, TemplateException {
 		
 		DBTableInfo dbTableInfo = new MysqlDBTableInfo(configuration.getParam());
-		Set<Table> tables = dbTableInfo.getTables(configuration.getDbName());
+		Set<Table> tables = dbTableInfo.getTables(configuration.getDbName(), configuration.getExcludedTablePrefix());
 		if (configuration.isGeneratorPojo()) {
 			generatorFile(tables, Constant.POJO);
 		    generatorPojoKeyFile(tables, Constant.POJO_KEY);
@@ -130,8 +130,10 @@ public class Generator {
 			generatorFile(tables, Constant.JSP);
 		}
 		
-		generatorBaseQueryFile();
-		generatorSqlLikeFile();
+		if(!configuration.isDependPlatformCommon()){
+			generatorBaseQueryFile();
+			generatorSqlLikeFile();
+		}
 	}
 
 	private void generatorPojoKeyFile(Set<Table> tables, int pojoKey) throws IOException, TemplateException {
@@ -266,6 +268,7 @@ public class Generator {
 	private Map<String, Object> getRootData(Table table, int templateKey) {
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("author", configuration.getAuthor());
+		root.put("dependProjectCommonPackage", configuration.isDependPlatformCommon() ? configuration.getPlatformCommonPackage() : "");
 		// 获取模块名称，即默认表名称前缀
 		String moduleName = getModuleName(table.getTableName());
 		// 检查模块名称是否需要替换

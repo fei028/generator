@@ -10,8 +10,13 @@ import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
 import ${pojo_package}.${className}Key;
 </#if>
+<#if dependProjectCommonPackage == "">
 import ${common_package}.web.exception.CustomException;
 import ${common_package}.common.page.SimplePage;
+<#else>
+import ${dependProjectCommonPackage}.common.page.SimplePage;
+import ${dependProjectCommonPackage}.common.web.exception.CustomException;
+</#if>
 import ${pojo_package}.${className};
 
 /**
