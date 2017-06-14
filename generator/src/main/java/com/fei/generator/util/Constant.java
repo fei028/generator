@@ -39,6 +39,12 @@ public abstract class Constant {
 	public static final Integer JSP = 11;
 	
 	public static final Integer SQLLIKE_ENUM = 12;
+	
+	public static final Integer BASE_DAO = 13;
+	
+	public static final Integer BASE_SERVICE = 14;
+	
+	public static final Integer BASE_SERVICE_IMPL = 15;
 	/* end */
 	/**
 	 * 模版文件名称map<文件标志,文件名称>
@@ -59,6 +65,9 @@ public abstract class Constant {
 			put(Constant.JS, "js.ftl");
 			put(Constant.JSP, "jsp.ftl");
 			put(Constant.SQLLIKE_ENUM, "sqlLike.ftl");
+			put(Constant.BASE_DAO, "baseDao.ftl");
+			put(Constant.BASE_SERVICE, "base_service.ftl");
+			put(Constant.BASE_SERVICE_IMPL, "base_service_impl.ftl");
 		}
 	};
 	
@@ -108,6 +117,9 @@ public abstract class Constant {
 			put(Constant.JS, "");
 			put(Constant.JSP, "");
 			put(Constant.SQLLIKE_ENUM, "");
+			put(Constant.BASE_DAO, "Dao");
+			put(Constant.BASE_SERVICE, "Service");
+			put(Constant.BASE_SERVICE_IMPL, "ServiceImpl");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -126,6 +138,9 @@ public abstract class Constant {
 			put(Constant.JS, ".js");
 			put(Constant.JSP, ".jsp");
 			put(Constant.SQLLIKE_ENUM, ".java");
+			put(Constant.BASE_DAO, ".java");
+			put(Constant.BASE_SERVICE, ".java");
+			put(Constant.BASE_SERVICE_IMPL, ".java");
 		}
 	};
 	@SuppressWarnings("serial")
@@ -142,6 +157,9 @@ public abstract class Constant {
 			put(Constant.BASE_QUERY, "com.mypackage.query");
 			put(Constant.JS, "com.mypackage.js");
 			put(Constant.JSP, "com.mypackage.jsp");
+			put(Constant.BASE_DAO, "com.mypackage.dao");
+			put(Constant.BASE_SERVICE, "com.mypackage.service");
+			put(Constant.BASE_SERVICE_IMPL, "com.mypackage.service");
 		}
 	};
 	
@@ -154,5 +172,4 @@ public abstract class Constant {
 	};
 	public static final Map<String,String> EXCLUDED_TABLEPREFIX_MAP = new HashMap<>();
 	
-
 }

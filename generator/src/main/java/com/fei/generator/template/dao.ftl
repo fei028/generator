@@ -1,10 +1,14 @@
 <#-- dao层 接口模版文件-->
-package ${dao_package};
+package ${dao_package };
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-
+<#if use_basedao_type == "1">
+import ${base_dao_package}.BaseDao;
+<#elseif use_basedao_type == "2">
+import ${dependProjectCommonPackage}.common.dao.BaseDao;
+</#if>
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
 <#if table.primaryKeyFields?size gt 1>
@@ -15,8 +19,8 @@ import ${pojo_package}.${className}Key;
  * @author ${author}
  *
  */
-public interface ${className}${daoSuffix} {
-
+public interface ${className}${daoSuffix} <#if use_basedao_type != "0">extends Base<#if use_basedao_type == "1">${daoSuffix}<#else>Dao</#if><${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if>{
+<#if use_basedao_type == "0">
 	/**
 	 * 新增,pojo中属性为NULL值不插入对应数据库中字段
 	 * @param ${className?uncap_first}
@@ -91,4 +95,5 @@ public interface ${className}${daoSuffix} {
 	 */
 	public List<Integer> get${table.primaryKeyFields[0].propertyName?cap_first}s(${className}Query ${className?uncap_first}Query);
 	</#if>
+</#if>
 }

@@ -1,9 +1,8 @@
 <#-- service层 接口文件-->
 package ${service_package};
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import ${service_package}.${className}Service;
 import ${query_package}.${className}Query;
@@ -11,9 +10,13 @@ import ${query_package}.${className}Query;
 import ${pojo_package}.${className}Key;
 </#if>
 <#if dependProjectCommonPackage == "">
+<#if use_baseservice_type != "0">
+import ${common_package}.service.BaseService;
+</#if>
 import ${common_package}.web.exception.CustomException;
 import ${common_package}.common.page.SimplePage;
 <#else>
+import ${dependProjectCommonPackage}.common.service.BaseService;
 import ${dependProjectCommonPackage}.common.page.SimplePage;
 import ${dependProjectCommonPackage}.common.web.exception.CustomException;
 </#if>
@@ -24,8 +27,8 @@ import ${pojo_package}.${className};
  * @author ${author}
  *
  */
-public interface ${className}Service {
-	
+public interface ${className}Service <#if use_baseservice_type != "0">extends BaseService<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if>{
+<#if use_baseservice_type == "0">
 	<#if table.primaryKeyFields?size = 1>
 	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first});
 	</#if>
@@ -53,4 +56,5 @@ public interface ${className}Service {
 	 * @return true[数据库中除其本身以外没有该值]
 	 */
 	boolean checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException;
+</#if>
 }

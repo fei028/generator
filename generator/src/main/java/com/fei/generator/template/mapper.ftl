@@ -98,7 +98,7 @@
 <!--  *****查询有关  start***** -->
 
   <!--  条件查询  -->
-  <select id="select${className?cap_first}sWithCondition" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Query">
+  <select id="select<#if use_basedao_type == "0">${className?cap_first}<#else>Objects</#if>sWithCondition" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Query">
   	<include refid="selector"/>
   	<include refid="where"/>
   	<include refid="groupBy"/>
@@ -115,13 +115,13 @@
   
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键查询  -->
-  <select id="selectBy${table.primaryKeyFields[0].propertyName?cap_first}" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
+  <select id="selectBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
     SELECT 
     <include refid="Base_Column_List" />
     FROM ${table.tableName}
     WHERE ${table.primaryKeyFields[0].columnName} = ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
   </select>
-  <#else>
+  <#elseif use_basedao_type == "0">
   <!-- 通过主键查询  -->
   <select id="selectBy${className?cap_first}Key" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Key" >
     SELECT 
@@ -135,7 +135,7 @@
   </#if>
   <#if table.primaryKeyFields?size = 1>
   <!-- 获取符合条件的对象的主键集合 -->
-  <select id="get${table.primaryKeyFields[0].propertyName?cap_first}s" resultType="${table.primaryKeyFields[0].dataType?uncap_first}" parameterType="${className}Query">
+  <select id="get<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s" resultType="${table.primaryKeyFields[0].dataType?uncap_first}" parameterType="${className}Query">
     SELECT ${table.primaryKeyFields[0].columnName}
   	FROM ${table.tableName}
   	<include refid="where"/>
@@ -148,7 +148,7 @@
 <!--  *****删除有关  start***** -->
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量删除 -->
-  <delete id="deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s">
+  <delete id="deleteBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s">
   	 DELETE FROM ${table.tableName}
      WHERE ${table.primaryKeyFields[0].columnName} IN 
 	 <foreach collection="list" item="${table.primaryKeyFields[0].propertyName?uncap_first}" open="(" close=")" separator=",">
@@ -157,11 +157,11 @@
   </delete>
   
   <!-- 通过主键删除 -->
-  <delete id="deleteBy${table.primaryKeyFields[0].propertyName?cap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
+  <delete id="deleteBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
     delete from ${table.tableName}
     where ${table.primaryKeyFields[0].columnName} = ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
   </delete>
-  <#else>
+  <#elseif use_basedao_type == "0">
   <!-- 通过主键删除 -->
   <delete id="deleteBy${className?cap_first}Key" parameterType="${className?cap_first}Key" >
     delete from ${table.tableName}

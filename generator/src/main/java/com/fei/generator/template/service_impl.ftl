@@ -1,13 +1,12 @@
 <#-- Service层 实现文件-->
 package ${service_package};
-
+<#if use_baseservice_type == "0">
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+</#if>
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,15 +19,15 @@ import ${query_package}.${className}Query;
 import ${pojo_package}.${className}Key;
 </#if>
 <#if dependProjectCommonPackage == "">
+<#if use_baseservice_type != "0">
+import ${common_package}.service.BaseServiceImpl;
+</#if>
 import ${common_package}.common.page.SimplePage;
 import ${common_package}.utils.SearchUtils;
 import ${common_package}.utils.Underline2CamelUtils;
 import ${common_package}.web.exception.CustomException;
 <#else>
-import ${dependProjectCommonPackage}.common.page.SimplePage;
-import ${dependProjectCommonPackage}.common.utils.SearchUtils;
-import ${dependProjectCommonPackage}.common.utils.Underline2CamelUtils;
-import ${dependProjectCommonPackage}.common.web.exception.CustomException;
+import ${dependProjectCommonPackage}.common.service.BaseServiceImpl;
 </#if>
 import ${pojo_package}.${className};
 
@@ -39,19 +38,23 @@ import ${pojo_package}.${className};
  */
 @Service
 @Transactional(readOnly = true)
-public class ${className}ServiceImpl implements ${className}Service{
-
+public class ${className}ServiceImpl <#if use_baseservice_type != "0">extends BaseServiceImpl<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if> implements ${className}Service{
+	<#if use_baseservice_type == "0">
 	private static final Logger logger = LoggerFactory.getLogger(${className}ServiceImpl.class);
-
-	@Autowired
+	</#if>
 	private ${className}${daoSuffix} ${className?uncap_first}${daoSuffix};
-	
+	@Autowired
+	public void set${className}${daoSuffix}(${className}${daoSuffix} ${className?uncap_first}${daoSuffix}){
+		this.${className?uncap_first}${daoSuffix} = ${className?uncap_first}${daoSuffix};
+		setBaseDao(${className?uncap_first}${daoSuffix});
+	}
+	<#if use_baseservice_type == "0">
 	<#if table.primaryKeyFields?size = 1>
 	@Override
 	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
 		
 		if(${table.primaryKeyFields[0].propertyName?uncap_first} != null){
-			return ${className?uncap_first}${daoSuffix}.selectBy${table.primaryKeyFields[0].propertyName?cap_first}(${table.primaryKeyFields[0].propertyName?uncap_first});
+			return ${className?uncap_first}${daoSuffix}.selectBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>(${table.primaryKeyFields[0].propertyName?uncap_first});
 		}
 		return null;
 	}
@@ -94,7 +97,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 	@Override
 	public void deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
-			${className?uncap_first}${daoSuffix}.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+			${className?uncap_first}${daoSuffix}.deleteBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		}
 	}
 	</#if>
@@ -113,7 +116,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 		List<${className}> list = null;
 		if(totalCount > 0){
 			SearchUtils.handleQueryObject(${className?uncap_first}Query, totalCount);
-			list = ${className?uncap_first}${daoSuffix}.select${className}sWithCondition(${className?uncap_first}Query);
+			list = ${className?uncap_first}${daoSuffix}.select<#if use_basedao_type == "0">${className}<#else>Object</#if>sWithCondition(${className?uncap_first}Query);
 		} 
 		SimplePage page = new SimplePage(${className?uncap_first}Query.getPageNo(), ${className?uncap_first}Query.getPageSize(), ${className?uncap_first}Query.getStartRow(), totalCount);
 		page.setList(list);
@@ -145,7 +148,7 @@ public class ${className}ServiceImpl implements ${className}Service{
 				throw new CustomException("检查属性名称是否设置错误");
 			}
 			
-			List<${className?cap_first}> ${className?uncap_first}s = ${className?uncap_first}Dao.select${className?cap_first}sWithCondition(${className?uncap_first}Query);
+			List<${className?cap_first}> ${className?uncap_first}s = ${className?uncap_first}Dao.select<#if use_basedao_type == "0">${className?cap_first}<#else>Object</#if>sWithCondition(${className?uncap_first}Query);
 			if(${className?uncap_first}s == null || ${className?uncap_first}s.isEmpty()){
 				return true;
 			} else {
@@ -157,5 +160,15 @@ public class ${className}ServiceImpl implements ${className}Service{
 		}
 		return false;
 	}
+	<#else>
+	@Override
+	protected ${table.primaryKeyFields[0].dataType} getKeyValue(${className?cap_first} ${className?uncap_first}) {
+		return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}();
+	}
 
+	@Override
+	public void setLogger() {
+		logger = LoggerFactory.getLogger(${className?cap_first}ServiceImpl.class);
+	}
+	</#if>
 }

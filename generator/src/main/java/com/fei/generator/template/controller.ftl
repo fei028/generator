@@ -83,7 +83,7 @@ public class ${className}Controller {
 		${className} ${className?uncap_first} = null;
 		
 		if(${table.primaryKeyFields[0].propertyName?uncap_first} != null){
-			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
+			${className?uncap_first} = ${className?uncap_first}Service.get<#if use_baseservice_type == "0">${className}<#else>Object</#if>ByKey(${table.primaryKeyFields[0].propertyName?uncap_first});
 		}
 		
 		return ${className?uncap_first};
@@ -98,7 +98,7 @@ public class ${className}Controller {
 		${className} ${className?uncap_first} = null;
 		
 		if(${className?uncap_first}Key != null){
-			${className?uncap_first} = ${className?uncap_first}Service.get${className}ByKey(${className?uncap_first}Key);
+			${className?uncap_first} = ${className?uncap_first}Service.get<#if use_baseservice_type == "0">${className}<#else>Object</#if>ByKey(${className?uncap_first}Key);
 		}
 		
 		return ${className?uncap_first};
@@ -138,7 +138,7 @@ public class ${className}Controller {
 	@ResponseBody
 	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
-			${className?uncap_first}Service.deleteBy${table.primaryKeyFields[0].propertyName?cap_first}s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
+			${className?uncap_first}Service.deleteBy<#if use_baseservice_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		} else {
 			return "没有可删除的对象";
 		}
@@ -149,7 +149,7 @@ public class ${className}Controller {
 	@RequestMapping(value = "/search")
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-search"})
 	@ResponseBody
-	public Map<String,Object> search(${className}Query ${className?uncap_first}Query, HttpServletRequest request) {
+	public Map<String,Object> search(${className}Query ${className?uncap_first}Query, HttpServletRequest request)  throws CustomException {
 		
 		//${className?uncap_first}Query.setFields(fields);
 		
@@ -177,7 +177,7 @@ public class ${className}Controller {
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-add","${module}-${className?uncap_first}-update"}, logical = Logical.OR)
 	@ResponseBody
 	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
-		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first});
+		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first}<#if use_baseservice_type != "0">,"${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>);
 		return unique ? Result.ok() : Result.error();
 	}
 	
@@ -201,7 +201,7 @@ public class ${className}Controller {
 			Date date = new Date();
 			${className?uncap_first}.setCreateTime(date);
 			${className?uncap_first}.setCreateUser(activeUser.getUserId());
-			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add${className?cap_first}(${className?uncap_first});
+			${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first} = ${className?uncap_first}Service.add<#if use_baseservice_type == "0">${className?cap_first}</#if>(${className?uncap_first});
 			
 			logContent = activeUser.getUserName() + "创建了id[" + ${table.primaryKeyFields[0].propertyName?uncap_first} +"] ";
 			

@@ -30,6 +30,10 @@ public class Configuration {
 	/** 生成的代码是否依赖于platform——common工程 */
 	private boolean dependPlatformCommon = false;
 	private String platformCommonPackage = "com.xlkh.platform.common";
+	/** 是否使用basedao 默认不使用 */
+	private boolean useBaseDao = false;
+	/** 是否使用baseService 默认不使用 */
+	private boolean useBaseService = false;
 	/** 包结构配置 **/
 	private String commonPackage;// 公共包
 	private String pojoPackage = "pojo";
@@ -295,6 +299,7 @@ public class Configuration {
 		
 		if(daoSuffix != null){
 			Constant.FILE_TYPE_NAME_MAP.put(Constant.DAO_INTER, this.daoSuffix);
+			Constant.FILE_TYPE_NAME_MAP.put(Constant.BASE_DAO, this.daoSuffix);
 		}
 		
 		logger.debug("设置dao文件后缀:{}", daoSuffix);
@@ -447,6 +452,22 @@ public class Configuration {
 
 	public void setPlatformCommonPackage(String platformCommonPackage) {
 		this.platformCommonPackage = platformCommonPackage;
+	}
+
+	public boolean isUseBaseDao() {
+		return useBaseDao;
+	}
+
+	public void setUseBaseDao(boolean useBaseDao) {
+		this.useBaseDao = useBaseDao;
+	}
+
+	public boolean isUseBaseService() {
+		return useBaseService;
+	}
+
+	public void setUseBaseService(boolean useBaseService) {
+		this.useBaseService = useBaseService;
 	}
 	
 }

@@ -30,9 +30,17 @@ public class Generator {
 	public Generator(Configuration configuration) {
 		this.configuration = configuration;
 		
+		if(configuration == null){
+			throw new RuntimeException("参数configuration == null");
+		}
 		String commonPackage = configuration.getCommonPackage();
 		String pojoPackage = configuration.getPojoPackage();
 		Constant.DEFAULT_BASE_PACKAGE = commonPackage;
+		
+		if(configuration.isUseBaseService()){
+			configuration.setUseBaseDao(true);
+		}
+		
 		if(pojoPackage != null){
 			Constant.DEFAULT_PACKAGE_MAP.put(Constant.POJO, commonPackage + "." + pojoPackage);
 		}
@@ -40,6 +48,7 @@ public class Generator {
 		String daoPackage = configuration.getDaoPackage();
 		if(daoPackage != null){
 			Constant.DEFAULT_PACKAGE_MAP.put(Constant.DAO_INTER, commonPackage + "." + daoPackage);
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.BASE_DAO, Constant.DEFAULT_PACKAGE_MAP.get(Constant.DAO_INTER));
 		}
 		
 		String daoImplPackage = configuration.getDaoImplPackage();
@@ -49,7 +58,10 @@ public class Generator {
 		
 		String servicePackage = configuration.getServicePackage();
 		if(servicePackage != null){
-			Constant.DEFAULT_PACKAGE_MAP.put(Constant.SERVICE_INTER, commonPackage + "." + servicePackage);
+			String commonServicePackage = commonPackage + "." + servicePackage;
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.SERVICE_INTER, commonServicePackage);
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.BASE_SERVICE, commonServicePackage);
+			Constant.DEFAULT_PACKAGE_MAP.put(Constant.BASE_SERVICE_IMPL, commonServicePackage);
 		}
 		
 		String serviceImplPackage = configuration.getServiceImplPackage();
@@ -133,7 +145,39 @@ public class Generator {
 		if(!configuration.isDependPlatformCommon()){
 			generatorBaseQueryFile();
 			generatorSqlLikeFile();
+			if(configuration.isUseBaseDao()){
+				generatorBaseDaoFile();
+			}
+			if(configuration.isUseBaseService()){
+				generatorBaseServiceAndImplFile();
+			}
 		}
+		
+	}
+
+	private void generatorBaseServiceAndImplFile() throws IOException, TemplateException {
+		Map<String, Object> root = new HashMap<String, Object>();
+		root.put("author", configuration.getAuthor());
+		root.put("key", Constant.BASE_SERVICE);
+		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
+		root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_SERVICE)).replace(".", File.separator));
+		File f = createFile(root);
+		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_SERVICE), f, root);
+		root.put("key", Constant.BASE_SERVICE_IMPL);
+		root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_SERVICE_IMPL)).replace(".", File.separator));
+		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_SERVICE_IMPL), f, root);
+	}
+
+	private void generatorBaseDaoFile() throws IOException, TemplateException {
+		Map<String, Object> root = new HashMap<String, Object>();
+		root.put("author", configuration.getAuthor());
+		root.put("key", Constant.BASE_DAO);
+		root.put("daoSuffix", configuration.getDaoSuffix());
+		root.put("base_query_package", Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_QUERY));
+		root.put("dir", new String(Constant.DEFAULT_PACKAGE_MAP.get(Constant.BASE_DAO)).replace(".", File.separator));
+		File f = createFile(root);
+		FreeMarkerUtil.generateFile(Constant.TEMPLATEFILE_MAP.get(Constant.BASE_DAO), f, root);
+		
 	}
 
 	private void generatorPojoKeyFile(Set<Table> tables, int pojoKey) throws IOException, TemplateException {
@@ -268,7 +312,12 @@ public class Generator {
 	private Map<String, Object> getRootData(Table table, int templateKey) {
 		Map<String, Object> root = new HashMap<String, Object>();
 		root.put("author", configuration.getAuthor());
-		root.put("dependProjectCommonPackage", configuration.isDependPlatformCommon() ? configuration.getPlatformCommonPackage() : "");
+		boolean dependPlatformCommon = configuration.isDependPlatformCommon();
+		root.put("dependProjectCommonPackage", dependPlatformCommon ? configuration.getPlatformCommonPackage() : "");
+		boolean useBaseDao = configuration.isUseBaseDao();
+		root.put("use_basedao_type", useBaseDao ? (dependPlatformCommon ? "2" : "1") : "0");
+		boolean useBaseService = configuration.isUseBaseService();
+		root.put("use_baseservice_type", useBaseService ? (dependPlatformCommon ? "2" : "1") : "0");
 		// 获取模块名称，即默认表名称前缀
 		String moduleName = getModuleName(table.getTableName());
 		// 检查模块名称是否需要替换
@@ -298,6 +347,7 @@ public class Generator {
 		
 		root.put("common_package", Constant.DEFAULT_BASE_PACKAGE);
 		root.put("pojo_package", defaultPackageMap.get(Constant.POJO) + "." + moduleName);
+		root.put("base_dao_package", defaultPackageMap.get(Constant.DAO_INTER));
 		root.put("dao_package", defaultPackageMap.get(Constant.DAO_INTER) + "." + moduleName);
 		root.put("dao_impl_package", defaultPackageMap.get(Constant.DAO_IMPL) + "." + moduleName);
 		root.put("service_package", defaultPackageMap.get(Constant.SERVICE_INTER) + "." + moduleName);
