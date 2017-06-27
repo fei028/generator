@@ -44,7 +44,9 @@ public class MysqlDBTableInfo implements DBTableInfo{
 				e.printStackTrace();
 			}
 		}
-		
+		for (Table table : tableSet) {
+			table.setTableName(table.getTableName().toLowerCase());
+		}
 		return tableSet;
 	}
 	

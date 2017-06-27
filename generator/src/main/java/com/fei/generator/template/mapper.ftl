@@ -3,21 +3,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="${dao_package}.${className}${daoSuffix}" >
   <resultMap id="${className?uncap_first}" type="${className}" >
+  	<#if (table.primaryKeyFields?size gt 0)>
     <#list table.primaryKeyFields as field>
     <id column="${field.columnName}" property="${field.propertyName?uncap_first}" javaType="${field.dataType?uncap_first}" />
     </#list>
+	</#if>
+    <#if (table.fields?size gt 0)>
     <#list table.fields as field>
     <result column="${field.columnName}" property="${field.propertyName?uncap_first}" javaType="${field.dataType?uncap_first}" />
     </#list>
+    </#if>
   </resultMap>
   
   <sql id="Base_Column_List" >
+    <#if (table.primaryKeyFields?size gt 0)>
   	<#list table.primaryKeyFields as field>
     ${field.columnName}<#if table.primaryKeyFields?size gt (field_index+1)  >,<#elseif table.fields?size gt 0>,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
     </#list>
+	</#if>
+	<#if (table.fields?size gt 0)>
   	<#list table.fields as field>
     ${field.columnName}<#if table.fields?size gt (field_index+1) >,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
     </#list>
+    </#if>
   </sql>
   
   <!-- 查询select部分  -->
@@ -34,6 +42,7 @@
   <!-- 查询where语句部分 -->
   <sql id="where">
 	<where>
+	    <#if (table.primaryKeyFields?size gt 0)>
 		<#list table.primaryKeyFields as field>
 		<if test="${field.propertyName?uncap_first} != null  and keys == null">
 			AND ${field.columnName} = ${'#'}{${field.propertyName?uncap_first}}
@@ -48,6 +57,8 @@
 			</foreach>
 		</if>
 		</#if>
+        </#if>
+        <#if (table.fields?size gt 0)>
 		<#list table.fields as field>
 		<if test="${field.propertyName?uncap_first} != null <#if field.dataType == 'String'>and ${field.propertyName?uncap_first} != ''</#if>">
             <#if field.dataType == 'String'>
@@ -62,6 +73,7 @@
             </#if>
 		</if>
 		</#list>
+        </#if>
 		<!-- 后期添加 -->
 		<if test="beginDate != null">
 			AND create_time &gt;= ${r'#{beginDate}'}
@@ -112,7 +124,7 @@
   	FROM ${table.tableName}
   	<include refid="where"/>
   </select>
-  
+  <#if (table.primaryKeyFields?size gt 0)>
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键查询  -->
   <select id="selectBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>" resultMap="${className?uncap_first}" parameterType="${table.primaryKeyFields[0].dataType?uncap_first}" >
@@ -133,6 +145,8 @@
 	</#list>
   </select>
   </#if>
+  </#if>
+  <#if (table.primaryKeyFields?size gt 0)>
   <#if table.primaryKeyFields?size = 1>
   <!-- 获取符合条件的对象的主键集合 -->
   <select id="get<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s" resultType="${table.primaryKeyFields[0].dataType?uncap_first}" parameterType="${className}Query">
@@ -143,9 +157,11 @@
   	<include refid="limit"/>
   </select>
   </#if>
+  </#if>
 <!--  *****查询有关  end***** -->
-
+<#if (table.primaryKeyFields?size gt 0)>
 <!--  *****删除有关  start***** -->
+   
   <#if table.primaryKeyFields?size = 1>
   <!-- 通过主键批量删除 -->
   <delete id="deleteBy<#if use_basedao_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s">
@@ -171,21 +187,24 @@
 	</#list>
   </delete>
   </#if>
-  
+
   
 <!--  *****删除有关  end***** -->
-
+ </#if>
 <!--  *****插入有关  start***** -->
 
   <!-- 有选择插入字段 NULL忽略-->
   <insert id="insertSelective" parameterType="${className}" <#if table.primaryKeyFields?size = 1>useGeneratedKeys="true" keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>>
+    <#if (table.primaryKeyFields?size gt 0)>
     <#if table.primaryKeyFields[0].dataType == 'String'>
     <selectKey keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}" order="BEFORE" resultType="string">
   		SELECT replace(uuid(),'-','') FROM dual
     </selectKey>
     </#if>
+	</#if>
     insert into ${table.tableName}
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <#if (table.primaryKeyFields?size gt 0)>
       <#list table.primaryKeyFields as field>
       <#if field.dataType == 'String'>
       	${field.columnName},
@@ -195,13 +214,17 @@
       </if>
 	  </#if>
       </#list>
+      </#if>
+      <#if (table.fields?size gt 0)>
       <#list table.fields as field>
       <if test="${field.propertyName?uncap_first} != null" >
         ${field.columnName},
       </if>
       </#list>
+      </#if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <#if (table.primaryKeyFields?size gt 0)>
       <#list table.primaryKeyFields as field>
       <#if field.dataType == 'String'>
       	replace(uuid(),'-',''),
@@ -211,48 +234,60 @@
       </if>
       </#if>
 	  </#list>
+      </#if>
+      <#if (table.fields?size gt 0)>
       <#list table.fields as field>
       <if test="${field.propertyName?uncap_first} != null" >
        ${'#'}{${field.propertyName?uncap_first}},
       </if>
 	  </#list>
+      </#if>
     </trim>
   </insert>
   <!-- 批量插入 -->
   <insert id="batchInsert" parameterType="list">
     INSERT INTO ${table.tableName}
       <trim prefix="(" suffix=")" suffixOverrides="," >
+          <#if (table.primaryKeyFields?size gt 0)>
           <#list table.primaryKeyFields as field>
           <#if field.dataType == 'String'>
           ${field.columnName},
 		  </#if>
           </#list>
+          </#if>
+          <#if (table.fields?size gt 0)>
           <#list table.fields as field>
           ${field.columnName}<#if table.fields?size gt (field_index+1)>,</#if>
           </#list>
+	      </#if>
       </trim>
      VALUES
      <foreach collection="list" item="item" separator=",">
      (
+     <#if (table.primaryKeyFields?size gt 0)>
      <#list table.primaryKeyFields as field>
 	     <#if field.dataType == 'String'>
 	     replace(uuid(),'-',''),
 		 </#if>
      </#list>
+	 </#if>
+	 <#if (table.fields?size gt 0)>
      <#list table.fields as field>
          ${'#'}{item.${field.propertyName?uncap_first}}<#if table.fields?size gt (field_index+1)>,</#if>
      </#list>
+     </#if>
      )
      </foreach>
   </insert>
 <!--  *****插入有关  end***** -->
-
+<#if (table.primaryKeyFields?size gt 0)>
 <!--  *****更新有关  start***** -->
   
   <!-- 选择更新字段 NULL忽略 -->
   <update id="update" parameterType="${className?cap_first}" >
     update ${table.tableName}
-    <set >
+    <set>
+      <#if (table.fields?size gt 0)>
       <#list table.fields as field>
       <#-- 主键忽略 -->
       <#if field.columnKey != "PRI">
@@ -261,6 +296,7 @@
       </if>
       </#if>
       </#list>
+	  </#if>
     </set>
     where 
     <#list table.primaryKeyFields as field>
@@ -269,4 +305,5 @@
   </update>
 
 <!--  *****更新有关  end***** -->
+</#if>
 </mapper>

@@ -11,6 +11,7 @@ import com.fei.generator.exception.FormatStringErrorException;
 import com.fei.generator.exception.MapKeyAlreadyExistException;
 import com.fei.generator.model.ConnectionParam;
 import com.fei.generator.util.Constant;
+import com.fei.generator.util.StringUtil;
 /**
  * 
  * @author fei
@@ -49,7 +50,7 @@ public class Configuration {
 	private String jsCommonDir = "static" + File.separator + "js" + File.separator + "pages";
 	private String jspCommonDir = "WEB-INF" + File.separator + "pages";
 	/** 模块名称替换map key:旧模块名称 value:替换成的新模块名称 */
-	private Map<String,String> moduleReplaceMap;
+	private Map<String,String> moduleReplaceMap = new HashMap<>();
 	/** 生成文件 默认生成 **/
 	private boolean isGeneratorPojo = true;
 	private boolean isGeneratorQuery = true;
@@ -410,7 +411,7 @@ public class Configuration {
 	 */
 	public void setModuleReplaceStr(String moduleReplaceStr){//[旧模块名称,新模块名称],[旧模块名称,新模块名称],[旧模块名称,新模块名称],
 		moduleReplaceStr = moduleReplaceStr == null ? null : moduleReplaceStr.trim();
-		if(moduleReplaceStr != null && moduleReplaceStr != ""){
+		if(StringUtil.isNotBlank(moduleReplaceStr)){
 			String _moduleReplaceStr = null;
 			if(!(moduleReplaceStr.charAt(moduleReplaceStr.length() - 1) == ',')){
 				_moduleReplaceStr = moduleReplaceStr + ",";
@@ -425,7 +426,6 @@ public class Configuration {
 			String[] moduleReplaceStrArr = _moduleReplaceStr.split("],");
 			
 			if(moduleReplaceStrArr != null && moduleReplaceStrArr.length > 0){
-				moduleReplaceMap = new HashMap<>();
 				for (String str : moduleReplaceStrArr) {
 					String[] moduleArr = str.substring(1, str.length()).split(",");
 					if(moduleReplaceMap.get(moduleArr[0]) == null){
@@ -451,7 +451,9 @@ public class Configuration {
 	}
 
 	public void setPlatformCommonPackage(String platformCommonPackage) {
-		this.platformCommonPackage = platformCommonPackage;
+		if(StringUtil.isNotBlank(platformCommonPackage)){
+			this.platformCommonPackage = platformCommonPackage.trim();
+		}
 	}
 
 	public boolean isUseBaseDao() {

@@ -17,7 +17,7 @@ import ${dependProjectCommonPackage}.common.web.exception.CustomException;
  * @author ${author}
  *
  */
-public interface base_service<T, PK extends Serializable, Q extends BaseQuery> {
+public interface BaseService<T, PK extends Serializable, Q extends BaseQuery> {
 	
 	public T getObjectByKey(PK pk);
 
@@ -27,17 +27,24 @@ public interface base_service<T, PK extends Serializable, Q extends BaseQuery> {
 
 	public void batchInsert(List<T> ts);
 	
-	public void deleteByIds(List<PK> pks);
+	public void deleteByKeys(List<PK> pks);
 	
 	SimplePage search(Q q) throws CustomException;
+	/**
+	 * 
+	 * @param q 查询对象
+	 * @param maxNumOfPage 最大页面显示的页号数量
+	 * @return
+	 * @throws CustomException
+	 */
+	SimplePage search(Q q, int maxNumOfPage) throws CustomException;
 	
 	/**
 	 * 检查某个属性值在数据库中的唯一性(排除自身),查找不到则说明该值插入之后唯一
 	 * @param property 属性名称
 	 * @param value 属性值
 	 * @param id 主键(不为null时，排除主键值等于该id的记录)
-	 * @param keyProperty 主键属性名称(不能为空)
 	 * @return true[数据库中除其本身以外没有该值]
 	 */
-	boolean checkUniqueness(String property, String value, PK id, String keyProperty) throws CustomException;
+	boolean checkUniqueness(String property, String value, PK id) throws CustomException;
 }

@@ -25,7 +25,7 @@ public class Table implements Serializable{
 		return tableName;
 	}
 	public void setTableName(String tableName) {
-		this.tableName = tableName.toLowerCase();;
+		this.tableName = tableName;
 	}
 	public List<Field> getFields() {
 		return fields;

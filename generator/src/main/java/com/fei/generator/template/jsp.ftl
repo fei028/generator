@@ -12,6 +12,7 @@
     <jsp:include page="../../common/navPath.jsp"></jsp:include>
     <div id="themeCondition" class="theme-condition">
 	  <div class="form-inline" role="form" id="searchForm">
+	    <#if (table.fields?size gt 0)>
 	  	<#list table.fields as field>
 		<div class="form-group username-div">
 		  <label for="s-${field.propertyName?uncap_first}">${field.columnComment }</label>
@@ -32,6 +33,7 @@
 		<#break>
 		</#if>
 		</#list>
+		</#if>
 		<div class="form-group">
 		  <button class="btn btn-bg" id="searchBtn">查询</button>
 		</div>
@@ -52,8 +54,9 @@
 	        <form class="form-horizontal" id="myForm" role="form" method="post">
 	                <div class="form-group row" style="display:none">
 						<label class="col-md-3 col-sm-3 dialog-label"></label>
-						<input class="col-md-7 col-sm-7 dialog-input" id="${table.primaryKeyFields[0].propertyName?uncap_first}" name="${table.primaryKeyFields[0].propertyName?uncap_first}"/>
+						<input class="col-md-7 col-sm-7 dialog-input" id="<#if (table.primaryKeyFields?size = 1)>${table.primaryKeyFields[0].propertyName?uncap_first}" name="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>/>
 					</div>
+					<#if (table.fields?size gt 0)>
 					<#list table.fields as field>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">${field.columnComment }</label>
@@ -62,6 +65,7 @@
     					</div>
 					</div>
 					</#list>
+					</#if>
 			</form>
 	      </div>
 	      <div class="modal-footer">

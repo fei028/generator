@@ -1,10 +1,11 @@
 <#-- pojo 模版文件 -->
 package ${pojo_package};
+
+import java.util.Date;
+
 <#if table.primaryKeyFields?size = 1>
 import java.io.Serializable;
 </#if>
-import java.util.Date;
-
 <#if table.primaryKeyFields?size gt 1>
 import ${pojo_package}.${className}Key;
 </#if>
@@ -17,24 +18,26 @@ import ${pojo_package}.${className}Key;
 <#if table.primaryKeyFields?size gt 1>
 @SuppressWarnings("serial")
 </#if>
-public class ${className} <#if table.primaryKeyFields?size gt 1>extends ${className}Key<#else> implements Serializable</#if>{
+public class ${className} <#if (table.primaryKeyFields?size gt 1)>extends ${className}Key<#else> implements Serializable</#if>{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	<#if table.primaryKeyFields?size = 1>
+	<#if (table.primaryKeyFields?size = 1)>
 	<#list table.primaryKeyFields as field>
 	/** ${field.columnComment} */ 
 	private ${field.dataType} ${field.propertyName?uncap_first}; // 主键 ${field.nullAble?string('非','')}必须
 	</#list>
 	</#if>
+    <#if (table.fields?size gt 0)>
 	<#list table.fields as field>
 	/** ${field.columnComment} */ 
 	private ${field.dataType} ${field.propertyName?uncap_first}; // ${field.nullAble?string('非','')}必须
 	</#list>
-	
+	</#if>
+
 <#if table.primaryKeyFields?size = 1>
 	<#list table.primaryKeyFields as field>
 	public ${field.dataType} get${field.propertyName?cap_first}() {
@@ -50,6 +53,7 @@ public class ${className} <#if table.primaryKeyFields?size gt 1>extends ${classN
 	}
 	</#list>
 </#if>
+<#if table.fields?size gt 0>
 	<#list table.fields as field>
 	public ${field.dataType} get${field.propertyName?cap_first}() {
 		return ${field.propertyName?uncap_first};
@@ -63,5 +67,6 @@ public class ${className} <#if table.primaryKeyFields?size gt 1>extends ${classN
 		</#if>
 	}
 	</#list>
+</#if>
 
 }

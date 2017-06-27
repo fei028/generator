@@ -31,18 +31,23 @@ import ${dependProjectCommonPackage}.common.web.exception.CustomException;
  * @author ${author}
  *
  */
-public abstract class base_service_impl<T, PK extends Serializable, Q extends BaseQuery> implements base_service<T, PK, Q>{
+public abstract class BaseServiceImpl<T, PK extends Serializable, Q extends BaseQuery> implements BaseService<T, PK, Q>{
 
+	private static final int DEA_MAX_NUM_PAGE = 5;
+	
 	protected static Logger logger;
 	protected BaseDao<T, PK, Q> baseDao;
 	private Class<?> clazz;
+	private String keyPropertyName;
 
-	public base_service_impl() {
+	public BaseServiceImpl() {
 		super();
 		setLogger();
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();//获取当前new对象的泛型的父类类型  
 	    clazz = (Class<?>) parameterizedType.getActualTypeArguments()[2];
 	    logger.debug("clazz:" + clazz);
+	    keyPropertyName = getKeyPropertyName();
+	    logger.debug("设置主键属性名称keyPropertyName:" + keyPropertyName);
 	}
 
 	@Override
@@ -81,15 +86,20 @@ public abstract class base_service_impl<T, PK extends Serializable, Q extends Ba
 
 	@Override
 	@Transactional(readOnly = false)
-	public void deleteByIds(List<PK> pks) {
+	public void deleteByKeys(List<PK> pks) {
 		if(CollectionUtils.isNotNullOrEmpty(pks)){
 			baseDao.deleteByKeys(pks);
 		}
 	}
 
-	@SuppressWarnings({ "unchecked"})
 	@Override
 	public SimplePage search(Q q) throws CustomException {
+		return search(q, DEA_MAX_NUM_PAGE);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public SimplePage search(Q q, int maxNumOfPage) throws CustomException {
 		// if q 为null,则查询全部
 		if(q == null){
 			try {
@@ -109,13 +119,12 @@ public abstract class base_service_impl<T, PK extends Serializable, Q extends Ba
 		} 
 		SimplePage page = new SimplePage(q.getPageNo(), q.getPageSize(), q.getStartRow(), totalCount);
 		page.setList(list);
-		
+		page.setMaxNumOfPage(maxNumOfPage);
 		return page;
 	}
-
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean checkUniqueness(String property, String value, PK id, String keyProperty) throws CustomException {
+	public boolean checkUniqueness(String property, String value, PK id) throws CustomException {
 		if(StringUtils.isNotBlank(property) && StringUtils.isNotBlank(value)){
 			Q q = null;
 			try {
@@ -126,7 +135,10 @@ public abstract class base_service_impl<T, PK extends Serializable, Q extends Ba
 			q.setPageNo(1);
 			q.setPageSize(2);
 			
-			q.setFields(Underline2CamelUtils.camel2Underline(keyProperty) + "," + Underline2CamelUtils.camel2Underline(property));
+			q.setFields(Underline2CamelUtils.camel2Underline(keyPropertyName) + "," + Underline2CamelUtils.camel2Underline(property));
+			
+			logger.warn("您设置的keyPropertyName:{},如果您没有自己设置,请重写该方法getKeyPropertyName()", keyPropertyName);
+			
 			Field field = null;
 			try {
 				field = q.getClass().getDeclaredField(property);
@@ -156,6 +168,11 @@ public abstract class base_service_impl<T, PK extends Serializable, Q extends Ba
 		return false;
 	}
 	
+	/**
+	 * 获取当前对象主键值
+	 * @param t 当前对象
+	 * @return
+	 */
 	protected abstract PK getKeyValue(T t);
 
 	public abstract void setLogger();
@@ -166,6 +183,10 @@ public abstract class base_service_impl<T, PK extends Serializable, Q extends Ba
 			throw new RuntimeException("baseDao不能设置空值");
 		}
 		this.baseDao = baseDao;
-	};
+	}
+
+	protected String getKeyPropertyName() {
+		return "id";
+	}
 	
 }

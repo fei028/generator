@@ -18,11 +18,13 @@ import ${dependProjectCommonPackage}.common.query.SqlLike;
 public class ${className}Query extends BaseQuery{
 
 	/**        设置批量条件查询where条件  set属性 在sql语句里相当于在where条件中 属性对应字段 = 设置的属性值     **/
-	
+	<#if (table.primaryKeyFields?size gt 0)>
 	<#list table.primaryKeyFields as field>
 	/** ${field.columnComment} */
 	private ${field.dataType} ${field.propertyName?uncap_first}; // 主键
 	</#list>
+	</#if>
+	<#if (table.fields?size gt 0)>
 	<#list table.fields as field>
 	/** ${field.columnComment} */
 	private ${field.dataType} ${field.propertyName?uncap_first};
@@ -31,7 +33,9 @@ public class ${className}Query extends BaseQuery{
 	private String ${field.propertyName?uncap_first}Like;
 	</#if>
 	</#list>
-	
+	</#if>
+
+    <#if (table.primaryKeyFields?size gt 0)>
 	<#list table.primaryKeyFields as field>
 
 	public ${field.dataType} get${field.propertyName?cap_first}() {
@@ -47,6 +51,8 @@ public class ${className}Query extends BaseQuery{
 		return this;
 	}
 	</#list>
+	</#if>
+	<#if (table.fields?size gt 0)>
 	<#list table.fields as field>
 	public ${field.dataType} get${field.propertyName?cap_first}() {
 		return ${field.propertyName?uncap_first};
@@ -82,9 +88,11 @@ public class ${className}Query extends BaseQuery{
 	}
 	</#if>
 	</#list>
+    </#if>
 	/**        设置批量条件查询where条件  end       **/
 	
 	/**   设置分组字段 start                     */
+	<#if (table.primaryKeyFields?size gt 0)>
 	<#list table.primaryKeyFields as field>
 	/**
 	 * 设置分组按属性：${field.propertyName?uncap_first}
@@ -95,6 +103,8 @@ public class ${className}Query extends BaseQuery{
 		return this;
 	}
 	</#list>
+</#if>
+ <#if (table.fields?size gt 0)>
 	<#list table.fields as field>
 	/**
 	 * 设置分组按属性：${field.propertyName?uncap_first}
@@ -105,9 +115,11 @@ public class ${className}Query extends BaseQuery{
 		return this;
 	}
 	</#list>
+</#if>
 	/**   设置分组字段 end                     */
 	
 	/**      设置排序字段 start                  **/
+	 <#if (table.primaryKeyFields?size gt 0)>
 	<#list table.primaryKeyFields as field>
 	/**
 	 * 设置排序按属性：${field.propertyName?uncap_first}
@@ -120,6 +132,8 @@ public class ${className}Query extends BaseQuery{
 		return this;
 	}
 	</#list>
+</#if>
+ <#if (table.fields?size gt 0)>
 	<#list table.fields as field>
 	/**
 	 * 设置排序按属性：${field.propertyName?uncap_first}
@@ -132,5 +146,6 @@ public class ${className}Query extends BaseQuery{
 		return this;
 	}
 	</#list>
+</#if>
 	/**      设置排序字段  end                   **/
 }

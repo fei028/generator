@@ -6,7 +6,7 @@ import java.util.Map;
 
 import ${service_package}.${className}Service;
 import ${query_package}.${className}Query;
-<#if table.primaryKeyFields?size gt 1>
+<#if (table.primaryKeyFields?size gt 1)>
 import ${pojo_package}.${className}Key;
 </#if>
 <#if dependProjectCommonPackage == "">
@@ -27,8 +27,8 @@ import ${pojo_package}.${className};
  * @author ${author}
  *
  */
-public interface ${className}Service <#if use_baseservice_type != "0">extends BaseService<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if>{
-<#if use_baseservice_type == "0">
+public interface ${className}Service <#if (table.primaryKeyFields?size = 1)><#if use_baseservice_type != "0">extends BaseService<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if></#if>{
+<#if ((table.primaryKeyFields?size lt 1)) || use_baseservice_type == "0">
 	<#if table.primaryKeyFields?size = 1>
 	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first});
 	</#if>
@@ -37,9 +37,9 @@ public interface ${className}Service <#if use_baseservice_type != "0">extends Ba
 	</#if>
 
 	public void update(${className} ${className?uncap_first});
-	
+	<#if (table.primaryKeyFields?size = 1)>
 	public ${table.primaryKeyFields[0].dataType} add${className}(${className} ${className?uncap_first});
-
+	</#if>
 	public void batchInsert(List<${className}> ${className?uncap_first}s);
 	
 	<#if table.primaryKeyFields?size = 1>
@@ -47,7 +47,7 @@ public interface ${className}Service <#if use_baseservice_type != "0">extends Ba
 	</#if>
 	
 	SimplePage search(${className}Query ${className?uncap_first}Query);
-	
+	<#if table.primaryKeyFields?size = 1>
 	/**
 	 * 检查某个属性值在数据库中的唯一性(排除自身),查找不到则说明该值插入之后唯一
 	 * @param property 属性名称
@@ -56,5 +56,6 @@ public interface ${className}Service <#if use_baseservice_type != "0">extends Ba
 	 * @return true[数据库中除其本身以外没有该值]
 	 */
 	boolean checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException;
+	</#if>
 </#if>
 }

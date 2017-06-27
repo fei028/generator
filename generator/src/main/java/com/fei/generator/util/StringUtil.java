@@ -16,4 +16,10 @@ public class StringUtil {
 	  else
 	    return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
 	}
+	public static boolean isNotBlank(String moduleReplaceStr) {
+		if(moduleReplaceStr != null && !moduleReplaceStr.trim().equals("")){
+			return true;
+		}
+		return false;
+	}
 }

@@ -74,8 +74,8 @@ public class Field implements Serializable{
 		for(int i = 1;i < split.length;i++){
 			sb.append(StringUtil.toUpperCaseFirstOne(split[i]));
 		}
-		
-		setPropertyName(sb.toString());
+		String propertyName = sb.toString();
+		setPropertyName('_' != columnName.charAt(columnName.length() - 1) ?  propertyName : (propertyName + "_") );
 	}
 	public String getColumnDefault() {
 		return columnDefault;

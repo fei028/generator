@@ -11,7 +11,7 @@ import ${dependProjectCommonPackage}.common.dao.BaseDao;
 </#if>
 import ${pojo_package}.${className};
 import ${query_package}.${className}Query;
-<#if table.primaryKeyFields?size gt 1>
+<#if (table.primaryKeyFields?size gt 1)>
 import ${pojo_package}.${className}Key;
 </#if>
 /**
@@ -19,8 +19,8 @@ import ${pojo_package}.${className}Key;
  * @author ${author}
  *
  */
-public interface ${className}${daoSuffix} <#if use_basedao_type != "0">extends Base<#if use_basedao_type == "1">${daoSuffix}<#else>Dao</#if><${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if>{
-<#if use_basedao_type == "0">
+public interface ${className}${daoSuffix} <#if (table.primaryKeyFields?size = 1)><#if use_basedao_type != "0">extends Base<#if use_basedao_type == "1">${daoSuffix}<#else>Dao</#if><${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if></#if>{
+<#if ((table.primaryKeyFields?size lt 1)) || use_basedao_type == "0">
 	/**
 	 * 新增,pojo中属性为NULL值不插入对应数据库中字段
 	 * @param ${className?uncap_first}
@@ -31,7 +31,7 @@ public interface ${className}${daoSuffix} <#if use_basedao_type != "0">extends B
 	* @param ${className?uncap_first}s
 	*/
 	public void batchInsert(List<${className}> ${className?uncap_first}s);
-	<#if table.primaryKeyFields?size = 1>
+	<#if (table.primaryKeyFields?size = 1)>
 	/**
 	 * 通过主键删除
 	 * @param ${table.primaryKeyFields[0].propertyName?uncap_first} 主键
@@ -51,13 +51,13 @@ public interface ${className}${daoSuffix} <#if use_basedao_type != "0">extends B
 	public void deleteBy${className?cap_first}Key(${className?cap_first}Key ${className?uncap_first}Key);
 	
 	</#if>
+
 	/**
 	 * 更新,pojo中属性为NULL值不更新对应数据库中字段
 	 * @param ${className?uncap_first}
 	 */
 	public void update(${className} ${className?uncap_first});
-	
-	<#if table.primaryKeyFields?size = 1>
+	<#if (table.primaryKeyFields?size = 1)>
 	/**
 	 * 通过主键查询获取${className}对象
 	 * @param ${table.primaryKeyFields[0].propertyName} 主键id
@@ -87,7 +87,7 @@ public interface ${className}${daoSuffix} <#if use_basedao_type != "0">extends B
 	 */
 	public Long getCountWithCondition(${className}Query ${className?uncap_first}Query);
 	
-	<#if table.primaryKeyFields?size = 1>
+	<#if  (table.primaryKeyFields?size = 1)>
 	/**
 	 * 获取符合查询条件的对象的主键集合
 	 * @param ${className?uncap_first}Query

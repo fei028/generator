@@ -38,17 +38,19 @@ import ${pojo_package}.${className};
  */
 @Service
 @Transactional(readOnly = true)
-public class ${className}ServiceImpl <#if use_baseservice_type != "0">extends BaseServiceImpl<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if> implements ${className}Service{
-	<#if use_baseservice_type == "0">
+public class ${className}ServiceImpl <#if (table.primaryKeyFields?size = 1)><#if use_baseservice_type != "0">extends BaseServiceImpl<${className}, ${table.primaryKeyFields[0].dataType}, ${className}Query></#if></#if> implements ${className}Service{
+	<#if ((table.primaryKeyFields?size lt 1)) || use_baseservice_type == "0">
 	private static final Logger logger = LoggerFactory.getLogger(${className}ServiceImpl.class);
 	</#if>
 	private ${className}${daoSuffix} ${className?uncap_first}${daoSuffix};
 	@Autowired
 	public void set${className}${daoSuffix}(${className}${daoSuffix} ${className?uncap_first}${daoSuffix}){
 		this.${className?uncap_first}${daoSuffix} = ${className?uncap_first}${daoSuffix};
+		<#if use_baseservice_type != "0">
 		setBaseDao(${className?uncap_first}${daoSuffix});
+		</#if>
 	}
-	<#if use_baseservice_type == "0">
+	<#if ((table.primaryKeyFields?size != 1)) || use_baseservice_type == "0">
 	<#if table.primaryKeyFields?size = 1>
 	@Override
 	public ${className} get${className}ByKey(${table.primaryKeyFields[0].dataType} ${table.primaryKeyFields[0].propertyName?uncap_first}){
@@ -76,14 +78,14 @@ public class ${className}ServiceImpl <#if use_baseservice_type != "0">extends Ba
 			${className?uncap_first}${daoSuffix}.update(${className?uncap_first});
 		}
 	}
-	
+	<#if table.primaryKeyFields?size = 1>
 	@Transactional(readOnly = false)
 	@Override
 	public ${table.primaryKeyFields[0].dataType} add${className}(${className} ${className?uncap_first}){
 		${className?uncap_first}${daoSuffix}.insertSelective(${className?uncap_first});
 		return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}();
 	}
-
+	</#if> 
 	@Transactional(readOnly = false)
 	@Override
 	public void batchInsert(List<${className}> ${className?uncap_first}s){
@@ -123,7 +125,7 @@ public class ${className}ServiceImpl <#if use_baseservice_type != "0">extends Ba
 		
 		return page;
 	}
-	
+	<#if table.primaryKeyFields?size = 1>
 	@Override
 	public boolean checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException {
 		if(StringUtils.isNotBlank(property) && StringUtils.isNotBlank(value)){
@@ -160,15 +162,23 @@ public class ${className}ServiceImpl <#if use_baseservice_type != "0">extends Ba
 		}
 		return false;
 	}
+	</#if>
 	<#else>
+	<#if table.primaryKeyFields?size == 1>
 	@Override
 	protected ${table.primaryKeyFields[0].dataType} getKeyValue(${className?cap_first} ${className?uncap_first}) {
 		return ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}();
 	}
 
 	@Override
+	protected String getKeyPropertyName() {
+		return "${table.primaryKeyFields[0].propertyName?uncap_first}";
+	}
+	
+	@Override
 	public void setLogger() {
 		logger = LoggerFactory.getLogger(${className?cap_first}ServiceImpl.class);
 	}
 	</#if>
+    </#if>
 }

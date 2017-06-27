@@ -371,7 +371,7 @@ public class Generator {
 		// 文件名
 		String[] split = tableName.split(configuration.getSeparator());
 		if(split.length <= arrStartIndex){
-			throw new RuntimeException("分割后数组元素个数:" + split.length + ",您配置忽略前" + arrStartIndex + "个数组元素");
+			throw new RuntimeException("tableName:" + tableName + " 分割后数组元素个数:" + split.length + ",您配置忽略前" + arrStartIndex + "个数组元素");
 		}
 		StringBuilder sb = new StringBuilder("");
 		sb.append(StringUtil.toUpperCaseFirstOne(split[arrStartIndex].toString()));
