@@ -110,7 +110,7 @@
 <!--  *****查询有关  start***** -->
 
   <!--  条件查询  -->
-  <select id="select<#if use_basedao_type == "0">${className?cap_first}<#else>Objects</#if>sWithCondition" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Query">
+  <select id="select<#if use_basedao_type == "0">${className?cap_first}<#else>Object</#if>sWithCondition" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Query">
   	<include refid="selector"/>
   	<include refid="where"/>
   	<include refid="groupBy"/>

@@ -177,7 +177,7 @@ public class ${className}Controller {
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-add","${module}-${className?uncap_first}-update"}, logical = Logical.OR)
 	@ResponseBody
 	public Result checkUniqueness(String property, String value, ${table.primaryKeyFields[0].dataType } ${table.primaryKeyFields[0].propertyName?uncap_first}) throws CustomException{
-		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first}<#if use_baseservice_type != "0">,"${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>);
+		boolean unique = ${className?uncap_first}Service.checkUniqueness(property, value, ${table.primaryKeyFields[0].propertyName?uncap_first}<#if use_baseservice_type == "0">,"${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>);
 		return unique ? Result.ok() : Result.error();
 	}
 	
