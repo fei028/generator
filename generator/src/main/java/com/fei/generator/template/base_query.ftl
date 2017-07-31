@@ -202,4 +202,14 @@ public class BaseQuery {
 		}
 		return afterEscapeContent;
 	}
+	
+	private String customQueryCondition;
+
+	public String getCustomQueryCondition() {
+		return customQueryCondition;
+	}
+
+	public void setCustomQueryCondition(String customQueryCondition) {
+		this.customQueryCondition = StringUtils.isNotBlank(customQueryCondition) ? customQueryCondition.trim() : null;
+	}
 }

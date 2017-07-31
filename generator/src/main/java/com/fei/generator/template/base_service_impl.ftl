@@ -33,7 +33,7 @@ import ${dependProjectCommonPackage}.common.web.exception.CustomException;
  */
 public abstract class BaseServiceImpl<T, PK extends Serializable, Q extends BaseQuery> implements BaseService<T, PK, Q>{
 
-	private static final int DEA_MAX_NUM_PAGE = 5;
+		private static final int DEA_MAX_NUM_PAGE = 5;
 	
 	protected static Logger logger;
 	protected BaseDao<T, PK, Q> baseDao;
@@ -86,6 +86,14 @@ public abstract class BaseServiceImpl<T, PK extends Serializable, Q extends Base
 
 	@Override
 	@Transactional(readOnly = false)
+	public void deleteByKey(PK pk) {
+		if(pk != null){
+			baseDao.deleteByKey(pk);
+		}
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
 	public void deleteByKeys(List<PK> pks) {
 		if(CollectionUtils.isNotNullOrEmpty(pks)){
 			baseDao.deleteByKeys(pks);
@@ -135,7 +143,7 @@ public abstract class BaseServiceImpl<T, PK extends Serializable, Q extends Base
 			q.setPageNo(1);
 			q.setPageSize(2);
 			
-			q.setFields(Underline2CamelUtils.camel2Underline(keyPropertyName) + "," + Underline2CamelUtils.camel2Underline(property));
+			q.setFields(Underline2CamelUtils.camel2Underline(keyPropertyName).toLowerCase() + "," + Underline2CamelUtils.camel2Underline(property).toLowerCase());
 			
 			logger.warn("您设置的keyPropertyName:{},如果您没有自己设置,请重写该方法getKeyPropertyName()", keyPropertyName);
 			
@@ -185,8 +193,7 @@ public abstract class BaseServiceImpl<T, PK extends Serializable, Q extends Base
 		this.baseDao = baseDao;
 	}
 
-	protected String getKeyPropertyName() {
-		return "id";
-	}
+	protected abstract String getKeyPropertyName();
+	
 	
 }

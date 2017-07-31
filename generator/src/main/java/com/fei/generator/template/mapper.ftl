@@ -81,6 +81,9 @@
 		<if test="endDate != null">
 			AND create_time &lt;= ${r'#{endDate}'}
 		</if>
+		<if test="customQueryCondition != null and customQueryCondition != ''">
+			${r'${customQueryCondition }'}
+		</if>
 	</where>
   </sql>
   <!-- 查询分组语句 -->

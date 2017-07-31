@@ -16,18 +16,24 @@
 	  	<#list table.fields as field>
 		<div class="form-group username-div">
 		  <label for="s-${field.propertyName?uncap_first}">${field.columnComment }</label>
-		  <input type="text" class="form-control" id="s-${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }"/>
+		  <#if field.dataType == 'String'>
+		  <input type="text" class="form-control" id="s-${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }">
+		  <#elseif field.dataType == 'Integer' || field.dataType == 'BigDecimal' || field.dataType == 'Byte' || field.dataType == 'Double' || field.dataType == 'Float' || field.dataType == 'Long'>
+		  <input type="text" class="form-control" id="s-${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }">
+		  <#elseif field.dataType == 'Date'>
+		  <input type="date" class="form-control" id="s-${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}" placeholder="请输入${field.columnComment }">
+		  </#if>
 		</div>
 		</#list>
 		<#list table.fields as field>
 		<#if field.dataType == "Date">
 		<div class="form-group">
 		  <label for="beginDate">创建时间</label>
-		  <input type="text" class="form-control" id="beginDate" name="beginDate" placeholder="开始时间"/>
+		  <input type="date" class="form-control" id="beginDate" name="beginDate" placeholder="开始时间"/>
 		</div>
 		<div class="form-group">
 		  <label id="endTime-label" for="endDate">至</label>
-		  <input type="text" class="form-control" id="endDate" name="endDate" placeholder="结束时间" />
+		  <input type="date" class="form-control" id="endDate" name="endDate" placeholder="结束时间" />
 		</div>
 		<span>&nbsp;</span>
 		<#break>
@@ -35,7 +41,7 @@
 		</#list>
 		</#if>
 		<div class="form-group">
-		  <button class="btn btn-bg" id="searchBtn">查询</button>
+		  <button class="btn btn-bg" id="searchBtn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>查询</button>
 		</div>
 		<div class="form-group">
 		  <button class="btn-3" id="resetBtn"><img src="${'$'}{pageContext.request.contextPath }/static/image/reset.png"/>重置</button>
@@ -61,7 +67,13 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label">${field.columnComment }</label>
 						<div class="col-sm-8">
-      						<input type="email" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}">
+							<#if field.dataType == 'String'>
+      						<input type="text" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}">
+							<#elseif field.dataType == 'Integer' || field.dataType == 'BigDecimal' || field.dataType == 'Byte' || field.dataType == 'Double' || field.dataType == 'Float' || field.dataType == 'Long'>
+							<input type="number" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}">
+							<#elseif field.dataType == 'Date'>
+							<input type="date" class="form-control" id="${field.propertyName?uncap_first}" name="${field.propertyName?uncap_first}">
+							</#if>
     					</div>
 					</div>
 					</#list>

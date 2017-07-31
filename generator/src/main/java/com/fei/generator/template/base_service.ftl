@@ -27,6 +27,8 @@ public interface BaseService<T, PK extends Serializable, Q extends BaseQuery> {
 
 	public void batchInsert(List<T> ts);
 	
+	public void deleteByKey(PK pk);
+	
 	public void deleteByKeys(List<PK> pks);
 	
 	SimplePage search(Q q) throws CustomException;

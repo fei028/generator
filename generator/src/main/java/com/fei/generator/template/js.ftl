@@ -44,9 +44,11 @@ $(function(){
 			saveOrUpdateBefore: function(){
 			<#if (table.fields?size gt 0)>
 				<#list table.fields as field>
-				var ${field.propertyName?uncap_first} = $.trim($("#${field.propertyName?uncap_first}").val());
+				var $${field.propertyName?uncap_first}Input = $("#${field.propertyName?uncap_first}");
+				var ${field.propertyName?uncap_first} = $.trim($${field.propertyName?uncap_first}Input.val());
 				if(${field.propertyName?uncap_first} == ""){
 					alert("输入的${field.columnComment }不能为空");
+					$${field.propertyName?uncap_first}Input.focus();
 					return false;
 				}
 				</#list>

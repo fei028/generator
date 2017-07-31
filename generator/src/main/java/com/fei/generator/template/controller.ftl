@@ -27,6 +27,9 @@ import ${service_package}.${className}Service;
 <#if dependProjectCommonPackage == "">
 import ${common_package}.utils.LogUtils;
 import ${common_package}.utils.SearchUtils;
+import ${common_package}.utils.CollectionUtils;
+import ${common_package}.utils.ExportFileUtils;
+import ${common_package}.utils.FileUtils;
 import ${common_package}.web.Constant;
 import ${common_package}.web.annotation.NavPath;
 import ${common_package}.web.annotation.ParentPermission;
@@ -37,6 +40,9 @@ import ${common_package}.pojo.system.ActiveUser;
 <#else>
 import ${dependProjectCommonPackage}.utils.LogUtils;
 import ${dependProjectCommonPackage}.common.utils.SearchUtils;
+import ${dependProjectCommonPackage}.common.utils.CollectionUtils;
+import ${dependProjectCommonPackage}.common.utils.ExportFileUtils;
+import ${dependProjectCommonPackage}.common.utils.FileUtils;
 import ${dependProjectCommonPackage}.web.Constant;
 import ${dependProjectCommonPackage}.web.annotation.NavPath;
 import ${dependProjectCommonPackage}.web.annotation.ParentPermission;
@@ -130,13 +136,30 @@ public class ${className}Controller {
 	}
 	<#if table.primaryKeyFields?size = 1>
 	/**
+	 * 删除
+	 * @param userIds
+	 */
+	@RequestMapping(value = "/deleteByKey")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-delete"})
+	@ResponseBody
+	public String deleteByKey(Integer key){
+		
+		if(key != null){
+			${className?uncap_first}Service.deleteByKey(key);
+		} else {
+			return "没有可删除的对象";
+		}
+		return "ok";
+	}
+	
+	/**
 	 * 批量删除
 	 * @param ${table.primaryKeyFields[0].propertyName?uncap_first}s
 	 */
 	@RequestMapping(value = "/deleteByKeys")
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-delete"})
 	@ResponseBody
-	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s,HttpServletRequest request){
+	public String deleteByKeys(@RequestParam(value="${table.primaryKeyFields[0].propertyName?uncap_first}s[]") List<${table.primaryKeyFields[0].dataType}> ${table.primaryKeyFields[0].propertyName?uncap_first}s){
 		if(${table.primaryKeyFields[0].propertyName?uncap_first}s != null && !${table.primaryKeyFields[0].propertyName?uncap_first}s.isEmpty()){
 			${className?uncap_first}Service.deleteBy<#if use_baseservice_type == "0">${table.primaryKeyFields[0].propertyName?cap_first}<#else>Key</#if>s(${table.primaryKeyFields[0].propertyName?uncap_first}s);
 		} else {
@@ -172,6 +195,55 @@ public class ${className}Controller {
 		
 		return map;
 	}
+	
+	@RequestMapping(value = "/exportExcelTemplate")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-export"})
+	public void exportExcelTemplate(HttpServletRequest request, HttpServletResponse response) throws CustomException{
+		String realPath = request.getServletContext().getRealPath(File.separator);
+		File file = new File(realPath + File.separator + "template" + File.separator + *模版文件名称* + "Template.xls");
+		//填入导出文件名称/String fileName = *** + "模版文件";
+		ExportFileUtils.exportFile(file, fileName , request, response);
+	}
+	
+	@RequestMapping(value = "/import")
+	@RequiresPermissions(value = {"${module}-${className?uncap_first}-import"})
+	@NavPath
+	public String import${className?cap_first}s(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, CustomException{
+		
+		if(file == null || file.isEmpty()){
+			String contentType="text/plain;charset=UTF-8";
+			response.setContentType(contentType);
+			response.getWriter().println("请刷新浏览器重新尝试该操作！！！");
+			return null;
+		}
+		String sep = File.separator;
+		String realPath = request.getServletContext().getRealPath(sep);
+		
+	    String fileName = FileUtils.generateNewFileName(file.getOriginalFilename());
+	    
+	    File tempDir = new File(realPath + sep + Constant.TEMP_DIR_NAME);
+	    if(!tempDir.exists()){
+	    	tempDir.mkdir();
+	    }
+	    
+	    File f = new File(tempDir, fileName);
+	    file.transferTo(f);
+	    
+	    ActiveUser activeUser = (ActiveUser) request.getSession().getAttribute(Constant.ACTIVEUSER_SESSION);
+	   // List<String> errorMsgList = portalUserService.importUsers(f, type, activeUser.getUserId());
+	    // 临时文件删除
+	    f.delete();
+	    
+		Collection<?> errorMsgList = null;
+		if(CollectionUtils.isNullOrEmpty(errorMsgList )){
+			response.setContentType("text/html;charset=UTF-8");
+			response.getWriter().write("<script>alert('导入成功');parent.$(window.parent.document.getElementById(\"sidebar-wrapper\"),parent.doucment).find('[class=\"active\"]').trigger('click');</script>");
+		} else {
+			request.setAttribute("errorMsgList", errorMsgList);
+			return "portalUser/errorMsg";
+		}
+		return null;
+	}
 	<#if ((table.primaryKeyFields?size = 1))>
 	@RequestMapping(value = "checkUniqueness")
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-add","${module}-${className?uncap_first}-update"}, logical = Logical.OR)
@@ -183,17 +255,17 @@ public class ${className}Controller {
 	
 	private String saveOrUpdate(${className?cap_first} ${className?uncap_first}, String tag, HttpServletRequest request) throws CustomException {
 		
-		//判断用户名是否已经存在
-		/*
-		if(!${className?uncap_first}Service.checkUniqueness("userName", ${className?uncap_first}.get*(), ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}())){
-			return "您输入的*已存在,请重新输入后保存";
-		}
-		*/
-		// 添加人
-		HttpSession session = request.getSession();
-		ActiveUser activeUser = (ActiveUser) session.getAttribute(Constant.ACTIVEUSER_SESSION);
+		ActiveUser activeUser = (ActiveUser) request.getSession().getAttribute(Constant.ACTIVEUSER_SESSION);
 		
+		String errorMsg = saveOrUpdateBeforeValidate(${className?uncap_first});
+		
+		if(errorMsg != null){
+			return errorMsg;
+		}
+
 		String logContent = null;
+		
+		setSomeAttributeValToNull(${className?uncap_first});
 		
 		if("add".equals(tag)){// 新增用户
 			
@@ -218,6 +290,35 @@ public class ${className}Controller {
 		LogUtils.setLogContent(request, logContent);
 		
 		return "ok";
+	}
+	
+	/**
+	 * 将一些属性值置为NULL,防止用户的更新或者新增操作
+	 * @param ${className?uncap_first}
+	 */
+	private void setSomeAttributeValToNull(${className?cap_first} ${className?uncap_first}) {
+		${className?uncap_first}.setUpdateTime(null);
+		${className?uncap_first}.setUpdateUser(null);
+		${className?uncap_first}.setCreateTime(null);
+		${className?uncap_first}.setCreateUser(null);
+	}
+	
+	private String saveOrUpdateBeforeValidate(${className?cap_first} ${className?uncap_first}) throws CustomException {
+		
+		if(${className?uncap_first} != null){
+			//判断存在
+			/*
+			if(!${className?uncap_first}Service.checkUniqueness("属性名称", ${className?uncap_first}.get*(), ${className?uncap_first}.get${table.primaryKeyFields[0].propertyName?cap_first}())){
+				return "您输入的*已存在,请重新输入后保存";
+			}
+			*/
+			
+		} else {
+			return "无法对空对象进行操作";
+		}
+		
+		return null;
+		
 	}
 	</#if>
 }
