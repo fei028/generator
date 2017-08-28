@@ -136,6 +136,16 @@
     FROM ${table.tableName}
     WHERE ${table.primaryKeyFields[0].columnName} = ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}}
   </select>
+  <!-- 通过主键集合查询  -->
+  <select id="selectByKeys" resultMap="${className?uncap_first}">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM ${table.tableName}
+    WHERE ${table.primaryKeyFields[0].columnName} in 
+	<foreach collection="list" item="key" open="(" close=")" separator=",">
+		#{key}
+	</foreach>
+  </select>
   <#elseif use_basedao_type == "0">
   <!-- 通过主键查询  -->
   <select id="selectBy${className?cap_first}Key" resultMap="${className?uncap_first}" parameterType="${className?cap_first}Key" >
