@@ -1,5 +1,6 @@
 package ${controller_package};
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -200,9 +201,9 @@ public class ${className}Controller {
 	@RequiresPermissions(value = {"${module}-${className?uncap_first}-export"})
 	public void exportExcelTemplate(HttpServletRequest request, HttpServletResponse response) throws CustomException{
 		String realPath = request.getServletContext().getRealPath(File.separator);
-		File file = new File(realPath + File.separator + "template" + File.separator + *模版文件名称* + "Template.xls");
+		//File file = new File(realPath + File.separator + "template" + File.separator + *模版文件名称* + "Template.xls");
 		//填入导出文件名称/String fileName = *** + "模版文件";
-		ExportFileUtils.exportFile(file, fileName , request, response);
+		//ExportFileUtils.exportFile(file, fileName , request, response);
 	}
 	
 	@RequestMapping(value = "/import")

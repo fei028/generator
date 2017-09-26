@@ -84,7 +84,38 @@
 		</dependency>
 
 	</dependencies>
-	
+	<!-- 私有仓库 -->
+	<repositories>
+		<repository>
+			<id>public_rep</id>  <!-- 这个ID需要与你新建的组group ID一致 -->
+			<name>public rep</name>
+			<url>http://192.168.205.36:8081/nexus/content/groups/public_rep/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>alimaven</id>
+			<name>aliyun maven</name>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<!-- 自动打包 -->
+	<distributionManagement>
+		<repository>
+			<id>releases</id><!-- 这个ID需要与你的release仓库的Repository ID一致 -->
+			<url>http://192.168.205.36:8081/nexus/content/repositories/releases</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>snapshots</id><!-- 这个ID需要与你的snapshots仓库的Repository ID一致 -->
+			<url>http://192.168.205.36:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
