@@ -23,7 +23,9 @@
 	</#if>
 	<#if (table.fields?size gt 0)>
   	<#list table.fields as field>
+  	<#if field.columnName != 'password'>
     ${field.columnName}<#if table.fields?size gt (field_index+1) >,</#if><#if field.columnComment??><!-- ${field.columnComment} --></#if>
+    </#if>
     </#list>
     </#if>
   </sql>
@@ -143,7 +145,7 @@
     FROM ${table.tableName}
     WHERE ${table.primaryKeyFields[0].columnName} in 
 	<foreach collection="list" item="key" open="(" close=")" separator=",">
-		#{key}
+		${'#'}{key}
 	</foreach>
   </select>
   <#elseif use_basedao_type == "0">
@@ -207,11 +209,16 @@
 <!--  *****插入有关  start***** -->
 
   <!-- 有选择插入字段 NULL忽略-->
-  <insert id="insertSelective" parameterType="${className}" <#if table.primaryKeyFields?size = 1>useGeneratedKeys="true" keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>>
+  <insert id="insertSelective" parameterType="${className}" <#if table.primaryKeyFields?size = 1 && table.primaryKeyFields[0].dataType != 'String'>useGeneratedKeys="true" keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}"</#if>>
     <#if (table.primaryKeyFields?size gt 0)>
     <#if table.primaryKeyFields[0].dataType == 'String'>
     <selectKey keyProperty="${table.primaryKeyFields[0].propertyName?uncap_first}" order="BEFORE" resultType="string">
-  		SELECT replace(uuid(),'-','') FROM dual
+  		<if test="id == null">
+  			SELECT replace(uuid(),'-','') FROM dual
+  		</if>
+  		<if test="id != null">
+  			SELECT ${'#'}{${table.primaryKeyFields[0].propertyName?uncap_first}} FROM dual
+  		</if>
     </selectKey>
     </#if>
 	</#if>
@@ -239,13 +246,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <#if (table.primaryKeyFields?size gt 0)>
       <#list table.primaryKeyFields as field>
-      <#if field.dataType == 'String'>
-      	replace(uuid(),'-',''),
-      <#else>
-      <if test="${field.propertyName?uncap_first} != null" >
+     	<if test="${field.propertyName?uncap_first} != null" >
         ${'#'}{${field.propertyName?uncap_first}},
-      </if>
-      </#if>
+      	</if>
 	  </#list>
       </#if>
       <#if (table.fields?size gt 0)>
@@ -316,7 +319,10 @@
 	${field.columnName} = ${'#'}{${field.propertyName?uncap_first}} <#if table.primaryKeyFields?size gt (field_index+1)>AND</#if>
 	</#list>
   </update>
-
+  <!-- 获取当前日期 -->
+  <select id="getCurDate" resultType="date">
+  	SELECT NOW()
+  </select>
 <!--  *****更新有关  end***** -->
 </#if>
 </mapper>

@@ -5,8 +5,9 @@
 <html>
   <head>
      <%@ include file="../../common/header.jsp" %>
-     <!-- Theme style -->
+     <#--
      <link href="${'$'}{pageContext.request.contextPath }/static/css/pages/_list.css" rel="stylesheet" type="text/css" />
+      -->
   </head>
   <body class="fixedbody">
     <jsp:include page="../../common/navPath.jsp"></jsp:include>
